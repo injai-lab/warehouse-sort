@@ -59,3 +59,13 @@ id_rsa*
 id_ed25519*
 .vscode/
 .DS_Store
+
+# Official code build and demo artifacts
+*.egg-info/
+build/
+dist/
+.pixi/
+il/demos/
+il/videos/
+media/
+.maniskill/

@@ -1,0 +1,22 @@
+# Hydra config for the IL training dispatcher (il/train.py).
+# Main track is STATE (default method=dp); dp_rgb is the optional image track.
+# Pick a method with method=... and override any hyperparameter on the CLI, e.g.
+#   pixi run python il/train.py                              # default: dp (state DP, main track)
+#   pixi run python il/train.py method=dp_rgb               # optional image track
+#   pixi run python il/train.py method=dp flags.total_iters=8000 flags.pred_horizon=32
+defaults:
+  - _self_
+  - method: dp   # default: state Diffusion Policy (main track)
+
+# shared across all methods
+env_id: WarehouseSort-v1
+control_mode: pd_ee_delta_pos
+sim_backend: gpu
+max_episode_steps: 200
+demo_dir: easy                  # which il/demos/<dir> dataset to train on
+demo_path: null                 # null -> auto (state/rgb dataset chosen by method.demo_kind)
+
+hydra:
+  output_subdir: null
+  run:
+    dir: .
