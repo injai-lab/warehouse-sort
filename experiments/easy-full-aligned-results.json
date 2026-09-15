@@ -1,0 +1,471 @@
+{
+  "checkpoint_sha256": "131f25d665933d4ff5e452c5909b60f56cedc902d6ee45a3fda747afd2401527",
+  "checkpoint_updates": 10001,
+  "previous_metrics_sha256": "4b79dc56d0e85b318333efe331207a683aafed1711f4cf15dd00b61d4b0df03d",
+  "previous": {
+    "metrics": {
+      "n_episodes": 20,
+      "num_parcels": 2,
+      "sort_accuracy": 0.35,
+      "mean_sorted": 0.7,
+      "all_placed_rate": 0.0,
+      "mean_steps": 100.0,
+      "mis_sort_rate": 0.0
+    },
+    "config": {
+      "difficulty": {
+        "name": "easy",
+        "num_parcels": 2,
+        "fixed_poses": true
+      },
+      "randomization": {
+        "parcel_pose": {
+          "xy_jitter": [
+            0.0,
+            0.0
+          ],
+          "yaw_jitter": [
+            0.0,
+            0.0
+          ]
+        },
+        "bin_position": {
+          "side_swap_prob": 0.0,
+          "xy_jitter": [
+            0.0,
+            0.0
+          ]
+        }
+      },
+      "seed": 20260915,
+      "num_envs": 4,
+      "device": "cuda",
+      "control_mode": "pd_ee_delta_pos",
+      "max_episode_steps": 200,
+      "obs_mode": "state",
+      "camera": {
+        "width": 128,
+        "height": 128
+      },
+      "obs_camera": "scene",
+      "checkpoint": "il/baselines/diffusion_policy/runs/warehouse_state_dp_easy_full_30k/checkpoints/best_eval_sort_accuracy.pt",
+      "eval_config": "conf/eval/easy_unseen_20.yaml",
+      "policy": "warehouse_sort.il_policy:load_dp",
+      "render_backend": "none",
+      "capture_video": false
+    },
+    "eval_config": {
+      "eval": {
+        "n_episodes": 20,
+        "seeds": [
+          100000,
+          100001,
+          100002,
+          100003,
+          100004,
+          100005,
+          100006,
+          100007,
+          100008,
+          100009,
+          100010,
+          100011,
+          100012,
+          100013,
+          100014,
+          100015,
+          100016,
+          100017,
+          100018,
+          100019
+        ]
+      }
+    },
+    "elapsed_seconds": 220.85379668907262,
+    "checkpoint_sha256": "131f25d665933d4ff5e452c5909b60f56cedc902d6ee45a3fda747afd2401527"
+  },
+  "protocol": {
+    "denoising_steps": 100,
+    "action_chunk": 8,
+    "obs_horizon": 2,
+    "pred_horizon": 16,
+    "num_envs": 4,
+    "seed": 20260915,
+    "seeds": [
+      100000,
+      100001,
+      100002,
+      100003,
+      100004,
+      100005,
+      100006,
+      100007,
+      100008,
+      100009,
+      100010,
+      100011,
+      100012,
+      100013,
+      100014,
+      100015,
+      100016,
+      100017,
+      100018,
+      100019
+    ],
+    "reset": "Explicit batch seeds; trainer FrameStack reset padding; auto-reset at truncation; discard old chunk",
+    "scene_kwargs": {
+      "control_mode": "pd_ee_delta_pos",
+      "reward_mode": "sparse",
+      "obs_mode": "state",
+      "render_mode": null,
+      "render_backend": "none",
+      "max_episode_steps": 200,
+      "human_render_camera_configs": {
+        "shader_pack": "default"
+      },
+      "num_parcels": 2,
+      "fixed_poses": true,
+      "randomization": {
+        "parcel_pose": {
+          "xy_jitter": [
+            0.0,
+            0.0
+          ],
+          "yaw_jitter": [
+            0.0,
+            0.0
+          ]
+        },
+        "bin_position": {
+          "side_swap_prob": 0.0,
+          "xy_jitter": [
+            0.0,
+            0.0
+          ]
+        }
+      }
+    },
+    "cudnn_deterministic": true
+  },
+  "metrics_199": {
+    "n_episodes": 20,
+    "correct_parcels": 20,
+    "total_parcels": 40,
+    "sort_accuracy": 0.5,
+    "all_placed_episodes": 0,
+    "all_placed_rate": 0.0,
+    "both_correct_episodes": 0
+  },
+  "metrics_200": {
+    "n_episodes": 20,
+    "correct_parcels": 20,
+    "total_parcels": 40,
+    "sort_accuracy": 0.5,
+    "all_placed_episodes": 0,
+    "all_placed_rate": 0.0,
+    "both_correct_episodes": 0
+  },
+  "episodes_199": [
+    {
+      "seed": 100000,
+      "steps": 199,
+      "sorted": 1,
+      "all_placed": false,
+      "mis_sorted": 0
+    },
+    {
+      "seed": 100001,
+      "steps": 199,
+      "sorted": 1,
+      "all_placed": false,
+      "mis_sorted": 0
+    },
+    {
+      "seed": 100002,
+      "steps": 199,
+      "sorted": 1,
+      "all_placed": false,
+      "mis_sorted": 0
+    },
+    {
+      "seed": 100003,
+      "steps": 199,
+      "sorted": 1,
+      "all_placed": false,
+      "mis_sorted": 0
+    },
+    {
+      "seed": 100004,
+      "steps": 199,
+      "sorted": 1,
+      "all_placed": false,
+      "mis_sorted": 0
+    },
+    {
+      "seed": 100005,
+      "steps": 199,
+      "sorted": 1,
+      "all_placed": false,
+      "mis_sorted": 0
+    },
+    {
+      "seed": 100006,
+      "steps": 199,
+      "sorted": 1,
+      "all_placed": false,
+      "mis_sorted": 0
+    },
+    {
+      "seed": 100007,
+      "steps": 199,
+      "sorted": 1,
+      "all_placed": false,
+      "mis_sorted": 0
+    },
+    {
+      "seed": 100008,
+      "steps": 199,
+      "sorted": 1,
+      "all_placed": false,
+      "mis_sorted": 0
+    },
+    {
+      "seed": 100009,
+      "steps": 199,
+      "sorted": 1,
+      "all_placed": false,
+      "mis_sorted": 0
+    },
+    {
+      "seed": 100010,
+      "steps": 199,
+      "sorted": 1,
+      "all_placed": false,
+      "mis_sorted": 0
+    },
+    {
+      "seed": 100011,
+      "steps": 199,
+      "sorted": 1,
+      "all_placed": false,
+      "mis_sorted": 0
+    },
+    {
+      "seed": 100012,
+      "steps": 199,
+      "sorted": 1,
+      "all_placed": false,
+      "mis_sorted": 0
+    },
+    {
+      "seed": 100013,
+      "steps": 199,
+      "sorted": 1,
+      "all_placed": false,
+      "mis_sorted": 0
+    },
+    {
+      "seed": 100014,
+      "steps": 199,
+      "sorted": 1,
+      "all_placed": false,
+      "mis_sorted": 0
+    },
+    {
+      "seed": 100015,
+      "steps": 199,
+      "sorted": 1,
+      "all_placed": false,
+      "mis_sorted": 0
+    },
+    {
+      "seed": 100016,
+      "steps": 199,
+      "sorted": 1,
+      "all_placed": false,
+      "mis_sorted": 0
+    },
+    {
+      "seed": 100017,
+      "steps": 199,
+      "sorted": 1,
+      "all_placed": false,
+      "mis_sorted": 0
+    },
+    {
+      "seed": 100018,
+      "steps": 199,
+      "sorted": 1,
+      "all_placed": false,
+      "mis_sorted": 0
+    },
+    {
+      "seed": 100019,
+      "steps": 199,
+      "sorted": 1,
+      "all_placed": false,
+      "mis_sorted": 0
+    }
+  ],
+  "episodes_200": [
+    {
+      "seed": 100000,
+      "steps": 200,
+      "sorted": 1,
+      "all_placed": false,
+      "mis_sorted": 0
+    },
+    {
+      "seed": 100001,
+      "steps": 200,
+      "sorted": 1,
+      "all_placed": false,
+      "mis_sorted": 0
+    },
+    {
+      "seed": 100002,
+      "steps": 200,
+      "sorted": 1,
+      "all_placed": false,
+      "mis_sorted": 0
+    },
+    {
+      "seed": 100003,
+      "steps": 200,
+      "sorted": 1,
+      "all_placed": false,
+      "mis_sorted": 0
+    },
+    {
+      "seed": 100004,
+      "steps": 200,
+      "sorted": 1,
+      "all_placed": false,
+      "mis_sorted": 0
+    },
+    {
+      "seed": 100005,
+      "steps": 200,
+      "sorted": 1,
+      "all_placed": false,
+      "mis_sorted": 0
+    },
+    {
+      "seed": 100006,
+      "steps": 200,
+      "sorted": 1,
+      "all_placed": false,
+      "mis_sorted": 0
+    },
+    {
+      "seed": 100007,
+      "steps": 200,
+      "sorted": 1,
+      "all_placed": false,
+      "mis_sorted": 0
+    },
+    {
+      "seed": 100008,
+      "steps": 200,
+      "sorted": 1,
+      "all_placed": false,
+      "mis_sorted": 0
+    },
+    {
+      "seed": 100009,
+      "steps": 200,
+      "sorted": 1,
+      "all_placed": false,
+      "mis_sorted": 0
+    },
+    {
+      "seed": 100010,
+      "steps": 200,
+      "sorted": 1,
+      "all_placed": false,
+      "mis_sorted": 0
+    },
+    {
+      "seed": 100011,
+      "steps": 200,
+      "sorted": 1,
+      "all_placed": false,
+      "mis_sorted": 0
+    },
+    {
+      "seed": 100012,
+      "steps": 200,
+      "sorted": 1,
+      "all_placed": false,
+      "mis_sorted": 0
+    },
+    {
+      "seed": 100013,
+      "steps": 200,
+      "sorted": 1,
+      "all_placed": false,
+      "mis_sorted": 0
+    },
+    {
+      "seed": 100014,
+      "steps": 200,
+      "sorted": 1,
+      "all_placed": false,
+      "mis_sorted": 0
+    },
+    {
+      "seed": 100015,
+      "steps": 200,
+      "sorted": 1,
+      "all_placed": false,
+      "mis_sorted": 0
+    },
+    {
+      "seed": 100016,
+      "steps": 200,
+      "sorted": 1,
+      "all_placed": false,
+      "mis_sorted": 0
+    },
+    {
+      "seed": 100017,
+      "steps": 200,
+      "sorted": 1,
+      "all_placed": false,
+      "mis_sorted": 0
+    },
+    {
+      "seed": 100018,
+      "steps": 200,
+      "sorted": 1,
+      "all_placed": false,
+      "mis_sorted": 0
+    },
+    {
+      "seed": 100019,
+      "steps": 200,
+      "sorted": 1,
+      "all_placed": false,
+      "mis_sorted": 0
+    }
+  ],
+  "elapsed_seconds": 176.91619621613063,
+  "validations": [
+    "strict EMA load",
+    "100 scheduler timesteps",
+    "8-action chunks",
+    "reset duplicates initial observation",
+    "history advances each step",
+    "200-step truncation and final_info",
+    "auto-reset clears history",
+    "25 policy calls per episode",
+    "demo/eval seed disjointness",
+    "previous report and checkpoint hashes unchanged"
+  ],
+  "provenance": {
+    "baseline_code_commit": "4169da3",
+    "raw_report_sha256": "e02be8bac90127e4cab769f9a9baa388349230df98ebfdf33ad0f6763386f8b0",
+    "note": "both_correct_episodes derived from the recorded per-episode sorted counts after evaluation; no new rollouts"
+  }
+}

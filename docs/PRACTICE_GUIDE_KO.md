@@ -201,7 +201,7 @@ Hydra 설정에서 이미 있는 항목은 `flags.foo=값`, YAML에 없는 항�
 |---|---|
 | loss | 시범 행동에 더한 노이즈 예측 오차. 작아져도 실제 작업 성공률이 반드시 증가하지 않음 |
 | sort_accuracy | 전체 택배 중 올바른 분류함에 들어간 비율 |
-| all-placed / success at end | 에피소드 끝에서 모든 택배를 올바르게 놓은 비율 |
+| all-placed / success at end | 공식 구현에서는 오분류도 포함해 모든 택배를 놓은 비율. 모두 정분류는 `success_count == num_parcels`로 별도 확인 |
 | mis-sort | 잘못된 분류함에 들어간 비율. 0이어도 택배를 아예 옮기지 못했을 수 있음 |
 | elapsed / training time | 실제 경과 시간. 현재 학습 요약 시간에는 중간 평가 포함 |
 
