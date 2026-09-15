@@ -1,6 +1,8 @@
 ALGO_NAME = 'BC_Diffusion_state_UNet'
 
 import os
+import json
+from datetime import datetime, timezone
 import random
 import time
 import numpy as np
@@ -23,7 +25,7 @@ from diffusers.schedulers.scheduling_ddpm import DDPMScheduler
 from diffusers.training_utils import EMAModel
 from diffusers.optimization import get_scheduler
 from diffusion_policy.conditional_unet1d import ConditionalUnet1D
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, asdict
 from typing import Optional, List
 import tyro
 
@@ -259,12 +261,19 @@ class Agent(nn.Module):
 def save_ckpt(run_name, tag):
     os.makedirs(f'runs/{run_name}/checkpoints', exist_ok=True)
     ema.copy_to(ema_agent.parameters())
+    target = f'runs/{run_name}/checkpoints/{tag}.pt'
     torch.save({
         'agent': agent.state_dict(),
         'ema_agent': ema_agent.state_dict(),
-    }, f'runs/{run_name}/checkpoints/{tag}.pt')
+        'completed_updates': completed_updates,
+        'args': asdict(args),
+    }, target + '.tmp')
+    os.replace(target + '.tmp', target)
 
 if __name__ == "__main__":
+    run_started = time.monotonic()
+    started_utc = datetime.now(timezone.utc).isoformat()
+    completed_updates = 0
     args = tyro.cli(Args)
     if args.exp_name is None:
         args.exp_name = os.path.basename(__file__)[: -len(".py")]
@@ -347,7 +356,9 @@ if __name__ == "__main__":
         worker_init_fn=lambda worker_id: worker_init_fn(worker_id, base_seed=args.seed),
     )
     if args.num_demos is None:
-        args.num_demos = len(dataset)
+        args.num_demos = len(dataset.trajectories['actions'])
+    with open(f'runs/{run_name}/effective_config.json', 'w') as f:
+        json.dump(asdict(args), f, indent=2)
 
     # agent setup
     agent = Agent(envs, args).to(device)
@@ -368,7 +379,7 @@ if __name__ == "__main__":
     ema = EMAModel(parameters=agent.parameters(), power=0.75)
     ema_agent = Agent(envs, args).to(device)
 
-    best_eval_metrics = defaultdict(float)
+    best_eval_metrics = defaultdict(lambda: float('-inf'))
     timings = defaultdict(float)
 
     # define evaluation and logging functions
@@ -387,10 +398,16 @@ if __name__ == "__main__":
                 writer.add_scalar(f"eval/{k}", eval_metrics[k], iteration)
                 print(f"{k}: {eval_metrics[k]:.4f}")
 
+            record = dict(completed_updates=completed_updates, log_iteration=iteration,
+                          elapsed_seconds=time.monotonic() - run_started,
+                          metrics={k: float(v) for k,v in eval_metrics.items()})
+            with open(f'runs/{run_name}/eval_history.jsonl', 'a') as f:
+                f.write(json.dumps(record) + '\n')
+            print('[evaluation] ' + json.dumps(record), flush=True)
             save_on_best_metrics = ["sort_accuracy", "success_once", "success_at_end"]
             for k in save_on_best_metrics:
                 if k in eval_metrics and eval_metrics[k] > best_eval_metrics[k]:
-                    best_eval_metrics[k] = eval_metrics[k]
+                    best_eval_metrics[k] = float(eval_metrics[k])
                     save_ckpt(run_name, f"best_eval_{k}")
                     print(
                         f"New best {k}_rate: {eval_metrics[k]:.4f}. Saving checkpoint."
@@ -434,6 +451,7 @@ if __name__ == "__main__":
         ema.step(agent.parameters())
         timings["ema"] += time.time() - last_tick
 
+        completed_updates = iteration + 1
         # Evaluation
         evaluate_and_save_best(iteration)
         log_metrics(iteration)
@@ -448,5 +466,12 @@ if __name__ == "__main__":
     evaluate_and_save_best(args.total_iters)
     log_metrics(args.total_iters)
 
+    save_ckpt(run_name, 'last')
+    summary = dict(started_utc=started_utc, completed_updates=completed_updates,
+                   elapsed_seconds=time.monotonic() - run_started, num_demos=args.num_demos,
+                   final_loss=float(total_loss.item()), best_metrics=dict(best_eval_metrics))
+    with open(f'runs/{run_name}/train_summary.json', 'w') as f:
+        json.dump(summary, f, indent=2)
+    print('[training_complete] ' + json.dumps(summary), flush=True)
     envs.close()
     writer.close()

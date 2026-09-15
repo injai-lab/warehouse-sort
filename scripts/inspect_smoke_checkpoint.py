@@ -10,7 +10,7 @@ run = root/'il/baselines/diffusion_policy/runs/warehouse_state_dp_smoke'
 first = torch.load(run/'checkpoints/0.pt', map_location='cpu', weights_only=True)
 last_path = run/'checkpoints/19.pt'
 last = torch.load(last_path, map_location='cpu', weights_only=True)
-assert set(last) == {'agent', 'ema_agent'}, last.keys()
+assert {'agent', 'ema_agent'}.issubset(last), last.keys()
 report = {'checkpoint': str(last_path.relative_to(root)), 'bytes': last_path.stat().st_size,
           'sha256': hashlib.sha256(last_path.read_bytes()).hexdigest(), 'weights': {}}
 for group in ('agent', 'ema_agent'):

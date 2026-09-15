@@ -39,6 +39,10 @@ class _DPPolicy:
         self.device = device
         self.prev = None
 
+    def reset(self):
+        """Clear observation history when starting independent evaluation episodes."""
+        self.prev = None
+
     @torch.no_grad()
     def act(self, obs, deterministic=True):
         cur = (obs["state"] if isinstance(obs, dict) else obs).float().to(self.device)
@@ -97,6 +101,10 @@ class _DPRgbPolicy:
         self.agent.noise_scheduler.set_timesteps(num_inference_steps)
         self.obs_horizon = obs_horizon
         self.device = device
+        self.prev = None
+
+    def reset(self):
+        """Clear observation history when starting independent evaluation episodes."""
         self.prev = None
 
     @torch.no_grad()

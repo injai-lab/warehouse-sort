@@ -15,6 +15,12 @@ Critical behaviour:
 """
 
 import os
+import json
+import random
+import time
+import hashlib
+from pathlib import Path
+import numpy as np
 
 import hydra
 import torch
@@ -30,6 +36,10 @@ def main(cfg):
     assert cfg.checkpoint, "pass checkpoint=<path to ckpt.pt>"
     assert cfg.get("eval_config"), "pass eval_config=<path to eval yaml>"
     log_run_header(cfg, "eval")
+    started = time.monotonic()
+    random.seed(cfg.seed)
+    np.random.seed(cfg.seed)
+    torch.manual_seed(cfg.seed)
     device = torch.device(cfg.device if torch.cuda.is_available() else "cpu")
 
     eval_cfg = OmegaConf.load(cfg.eval_config)
@@ -49,6 +59,12 @@ def main(cfg):
     print_metrics("EVAL", cfg.difficulty.name, obs_mode, m,
                   hard=(cfg.difficulty.name == "hard"))
     env.close()
+    out_dir = Path(hydra.core.hydra_config.HydraConfig.get().runtime.output_dir)
+    report = dict(metrics=m, config=OmegaConf.to_container(cfg, resolve=True),
+                  eval_config=OmegaConf.to_container(eval_cfg, resolve=True),
+                  elapsed_seconds=time.monotonic()-started,
+                  checkpoint_sha256=hashlib.sha256(Path(cfg.checkpoint).read_bytes()).hexdigest())
+    (out_dir / 'metrics.json').write_text(json.dumps(report, indent=2)+'\n')
 
     if not cfg.get("capture_video", True):
         print("[eval] video disabled by capture_video=false", flush=True)
