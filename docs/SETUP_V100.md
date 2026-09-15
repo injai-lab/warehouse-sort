@@ -132,3 +132,10 @@ The Kaggle account must have accepted the competition terms. Authenticated acces
 remote file sizes have been verified (see DATA_MANIFEST.json). After user rule acceptance,
 the easy/state pair was downloaded and the 20-update training/save/reload/evaluation smoke
 passed. No long training was started.
+
+## Full-data learning experiment
+
+A separate 30,000-update run on all 200 demos is complete. See
+[the full report](../experiments/2026-09-15-easy-full.md), exact effective configuration,
+periodic accuracy figure, local best/last model locations and 20-episode final results.
+The completed run name is protected against accidental reuse by the launcher.

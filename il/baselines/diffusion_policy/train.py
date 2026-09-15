@@ -392,7 +392,7 @@ if __name__ == "__main__":
             )
             timings["eval"] += time.time() - last_tick
 
-            print(f"Evaluated {len(eval_metrics['success_at_end'])} episodes")
+            print(f"Evaluated {eval_metrics['success_at_end'].size} episodes")
             for k in eval_metrics.keys():
                 eval_metrics[k] = np.mean(eval_metrics[k])
                 writer.add_scalar(f"eval/{k}", eval_metrics[k], iteration)

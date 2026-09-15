@@ -31,7 +31,9 @@ source .venv/bin/activate
 - [공식 제출 안내](SUBMISSION.md)
 - [환경 검증 결과](experiments/2026-09-15-setup.md)
 - [데이터 접근 기록](experiments/2026-09-15-data-access.md)
-- [최신 결과: 짧은 학습·저장·재로딩·평가 성공](experiments/2026-09-15-state-easy-smoke.md)
+- [짧은 학습·저장·재로딩·평가 기록](experiments/2026-09-15-state-easy-smoke.md)
+- [최신 결과: 전체 200개 시범·30,000회 본학습](experiments/2026-09-15-easy-full.md)
+- [별도 과제: Vulkan 영상](docs/VULKAN_TODO.md)
 
 시스템 환경은 유지하고 `.venv`만 사용합니다. 데이터와 체크포인트는 Git에 올리지 않습니다.
 

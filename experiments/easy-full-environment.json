@@ -1,0 +1,21 @@
+{
+  "training_code_commit": "b4417c594d27d2eba7aa89473b9e06467a9481c9",
+  "python": "3.10.21 (main, Sep  1 2026, 14:16:49) [Clang 22.1.3 ]",
+  "packages": {
+    "torch": "2.7.1+cu126",
+    "torchvision": "0.22.1+cu126",
+    "mani-skill": "3.0.1",
+    "sapien": "3.0.3",
+    "diffusers": "0.38.0",
+    "numpy": "2.2.6",
+    "gymnasium": "1.3.0",
+    "tyro": "1.0.16"
+  },
+  "gpu_query": [
+    "0, GPU-35d54364-c34b-0b03-412f-771c537310f6, Tesla V100-DGXS-32GB, 570.133.20",
+    "1, GPU-fd07e6ff-4706-9626-783b-071dd3165e0a, Tesla V100-DGXS-32GB, 570.133.20",
+    "2, GPU-6edfb25c-3fae-df20-b014-acf5b8171d65, Tesla V100-DGXS-32GB, 570.133.20",
+    "3, GPU-2924a4de-0823-646f-254d-ddbd0e8f2a47, Tesla V100-DGXS-32GB, 570.133.20"
+  ],
+  "selected_physical_gpu": 0
+}

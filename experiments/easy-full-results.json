@@ -1,0 +1,366 @@
+{
+  "training": {
+    "started_utc": "2026-09-15T07:18:43.258313+00:00",
+    "completed_updates": 30000,
+    "elapsed_seconds": 2409.9658030280843,
+    "num_demos": 200,
+    "final_loss": 0.001023633754812181,
+    "best_metrics": {
+      "sort_accuracy": 0.46875,
+      "success_once": 0.125,
+      "success_at_end": 0.125
+    }
+  },
+  "effective_config": {
+    "exp_name": "warehouse_state_dp_easy_full_30k",
+    "seed": 1,
+    "torch_deterministic": true,
+    "cuda": true,
+    "track": false,
+    "wandb_project_name": "ManiSkill",
+    "wandb_entity": null,
+    "capture_video": false,
+    "env_id": "WarehouseSort-v1",
+    "demo_path": "/home/student/projects/Robot Parcel Sorting Challenge/il/demos/easy/trajectory.state.pd_ee_delta_pos.physx_cuda.h5",
+    "num_demos": 200,
+    "total_iters": 30000,
+    "batch_size": 256,
+    "lr": 0.0001,
+    "obs_horizon": 2,
+    "act_horizon": 8,
+    "pred_horizon": 16,
+    "diffusion_step_embed_dim": 64,
+    "unet_dims": [
+      64,
+      128,
+      256
+    ],
+    "n_groups": 8,
+    "max_episode_steps": 200,
+    "log_freq": 1000,
+    "eval_freq": 5000,
+    "save_freq": 10000,
+    "num_eval_episodes": 16,
+    "num_eval_envs": 8,
+    "sim_backend": "gpu",
+    "render_backend": "none",
+    "num_dataload_workers": 0,
+    "control_mode": "pd_ee_delta_pos",
+    "demo_type": null
+  },
+  "periodic_evaluations": [
+    {
+      "completed_updates": 1,
+      "log_iteration": 0,
+      "elapsed_seconds": 82.68038652697578,
+      "metrics": {
+        "success_once": 0.0,
+        "return": 0.0,
+        "episode_len": 200.0,
+        "reward": 0.0,
+        "success_at_end": 0.0,
+        "sort_accuracy": 0.0
+      }
+    },
+    {
+      "completed_updates": 5001,
+      "log_iteration": 5000,
+      "elapsed_seconds": 478.8551307208836,
+      "metrics": {
+        "success_once": 0.0,
+        "return": 0.875,
+        "episode_len": 200.0,
+        "reward": 0.0043750000186264515,
+        "success_at_end": 0.0,
+        "sort_accuracy": 0.4375
+      }
+    },
+    {
+      "completed_updates": 10001,
+      "log_iteration": 10000,
+      "elapsed_seconds": 873.3638150941115,
+      "metrics": {
+        "success_once": 0.0,
+        "return": 0.9375,
+        "episode_len": 200.0,
+        "reward": 0.004687500186264515,
+        "success_at_end": 0.0,
+        "sort_accuracy": 0.46875
+      }
+    },
+    {
+      "completed_updates": 15001,
+      "log_iteration": 15000,
+      "elapsed_seconds": 1262.6842136390042,
+      "metrics": {
+        "success_once": 0.0,
+        "return": 0.75,
+        "episode_len": 200.0,
+        "reward": 0.0037499999161809683,
+        "success_at_end": 0.0,
+        "sort_accuracy": 0.375
+      }
+    },
+    {
+      "completed_updates": 20001,
+      "log_iteration": 20000,
+      "elapsed_seconds": 1652.814675108064,
+      "metrics": {
+        "success_once": 0.0,
+        "return": 0.9375,
+        "episode_len": 200.0,
+        "reward": 0.004687500186264515,
+        "success_at_end": 0.0,
+        "sort_accuracy": 0.46875
+      }
+    },
+    {
+      "completed_updates": 25001,
+      "log_iteration": 25000,
+      "elapsed_seconds": 2022.1411670369562,
+      "metrics": {
+        "success_once": 0.0,
+        "return": 0.5625,
+        "episode_len": 200.0,
+        "reward": 0.0028124998789280653,
+        "success_at_end": 0.0,
+        "sort_accuracy": 0.28125
+      }
+    },
+    {
+      "completed_updates": 30000,
+      "log_iteration": 30000,
+      "elapsed_seconds": 2409.7632635131013,
+      "metrics": {
+        "success_once": 0.125,
+        "return": 0.875,
+        "episode_len": 200.0,
+        "reward": 0.0043750000186264515,
+        "success_at_end": 0.125,
+        "sort_accuracy": 0.4375
+      }
+    }
+  ],
+  "checkpoints": {
+    "best_eval_sort_accuracy": {
+      "path": "il/baselines/diffusion_policy/runs/warehouse_state_dp_easy_full_30k/checkpoints/best_eval_sort_accuracy.pt",
+      "bytes": 35948249,
+      "sha256": "131f25d665933d4ff5e452c5909b60f56cedc902d6ee45a3fda747afd2401527",
+      "completed_updates": 10001
+    },
+    "last": {
+      "path": "il/baselines/diffusion_policy/runs/warehouse_state_dp_easy_full_30k/checkpoints/last.pt",
+      "bytes": 35941871,
+      "sha256": "780ad3e48e51271e16caf12f3d0a97c249cbbdb2927c2fcb107e5d6761ddc4b6",
+      "completed_updates": 30000
+    }
+  },
+  "final_evaluation": {
+    "metrics": {
+      "n_episodes": 20,
+      "num_parcels": 2,
+      "sort_accuracy": 0.35,
+      "mean_sorted": 0.7,
+      "all_placed_rate": 0.0,
+      "mean_steps": 100.0,
+      "mis_sort_rate": 0.0
+    },
+    "config": {
+      "difficulty": {
+        "name": "easy",
+        "num_parcels": 2,
+        "fixed_poses": true
+      },
+      "randomization": {
+        "parcel_pose": {
+          "xy_jitter": [
+            0.0,
+            0.0
+          ],
+          "yaw_jitter": [
+            0.0,
+            0.0
+          ]
+        },
+        "bin_position": {
+          "side_swap_prob": 0.0,
+          "xy_jitter": [
+            0.0,
+            0.0
+          ]
+        }
+      },
+      "seed": 20260915,
+      "num_envs": 4,
+      "device": "cuda",
+      "control_mode": "pd_ee_delta_pos",
+      "max_episode_steps": 200,
+      "obs_mode": "state",
+      "camera": {
+        "width": 128,
+        "height": 128
+      },
+      "obs_camera": "scene",
+      "checkpoint": "il/baselines/diffusion_policy/runs/warehouse_state_dp_easy_full_30k/checkpoints/best_eval_sort_accuracy.pt",
+      "eval_config": "conf/eval/easy_unseen_20.yaml",
+      "policy": "warehouse_sort.il_policy:load_dp",
+      "render_backend": "none",
+      "capture_video": false
+    },
+    "eval_config": {
+      "eval": {
+        "n_episodes": 20,
+        "seeds": [
+          100000,
+          100001,
+          100002,
+          100003,
+          100004,
+          100005,
+          100006,
+          100007,
+          100008,
+          100009,
+          100010,
+          100011,
+          100012,
+          100013,
+          100014,
+          100015,
+          100016,
+          100017,
+          100018,
+          100019
+        ]
+      }
+    },
+    "elapsed_seconds": 220.85379668907262,
+    "checkpoint_sha256": "131f25d665933d4ff5e452c5909b60f56cedc902d6ee45a3fda747afd2401527"
+  },
+  "losses": [
+    {
+      "log_iteration": 0,
+      "loss": 1.146294116973877
+    },
+    {
+      "log_iteration": 1000,
+      "loss": 0.06068291887640953
+    },
+    {
+      "log_iteration": 2000,
+      "loss": 0.03543391451239586
+    },
+    {
+      "log_iteration": 3000,
+      "loss": 0.028132181614637375
+    },
+    {
+      "log_iteration": 4000,
+      "loss": 0.01911068707704544
+    },
+    {
+      "log_iteration": 5000,
+      "loss": 0.016554243862628937
+    },
+    {
+      "log_iteration": 6000,
+      "loss": 0.0118157509714365
+    },
+    {
+      "log_iteration": 7000,
+      "loss": 0.018086876720190048
+    },
+    {
+      "log_iteration": 8000,
+      "loss": 0.010026069357991219
+    },
+    {
+      "log_iteration": 9000,
+      "loss": 0.011304785497486591
+    },
+    {
+      "log_iteration": 10000,
+      "loss": 0.014271989464759827
+    },
+    {
+      "log_iteration": 11000,
+      "loss": 0.007903533056378365
+    },
+    {
+      "log_iteration": 12000,
+      "loss": 0.004878581035882235
+    },
+    {
+      "log_iteration": 13000,
+      "loss": 0.0073267556726932526
+    },
+    {
+      "log_iteration": 14000,
+      "loss": 0.006340690888464451
+    },
+    {
+      "log_iteration": 15000,
+      "loss": 0.009564440697431564
+    },
+    {
+      "log_iteration": 16000,
+      "loss": 0.004522223956882954
+    },
+    {
+      "log_iteration": 17000,
+      "loss": 0.0038389533292502165
+    },
+    {
+      "log_iteration": 18000,
+      "loss": 0.0037366379983723164
+    },
+    {
+      "log_iteration": 19000,
+      "loss": 0.004326182417571545
+    },
+    {
+      "log_iteration": 20000,
+      "loss": 0.0038069989532232285
+    },
+    {
+      "log_iteration": 21000,
+      "loss": 0.0028914341237396
+    },
+    {
+      "log_iteration": 22000,
+      "loss": 0.004186361096799374
+    },
+    {
+      "log_iteration": 23000,
+      "loss": 0.002534469123929739
+    },
+    {
+      "log_iteration": 24000,
+      "loss": 0.004122948739677668
+    },
+    {
+      "log_iteration": 25000,
+      "loss": 0.001898524584248662
+    },
+    {
+      "log_iteration": 26000,
+      "loss": 0.004009624011814594
+    },
+    {
+      "log_iteration": 27000,
+      "loss": 0.0015900766011327505
+    },
+    {
+      "log_iteration": 28000,
+      "loss": 0.0023613490629941225
+    },
+    {
+      "log_iteration": 29000,
+      "loss": 0.0025845221243798733
+    },
+    {
+      "log_iteration": 30000,
+      "loss": 0.001023633754812181
+    }
+  ]
+}
