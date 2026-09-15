@@ -85,6 +85,8 @@ class Args:
     """the number of parallel environments to evaluate the agent on"""
     sim_backend: str = "physx_cpu"
     """the simulation backend to use for evaluation environments. can be "cpu" or "gpu"""
+    render_backend: str = "gpu"
+    """Use none for headless state-only simulation; gpu preserves upstream rendering."""
     num_dataload_workers: int = 0
     """the number of workers to use for loading the training data in the torch dataloader"""
     control_mode: str = 'pd_joint_delta_pos'
@@ -302,6 +304,11 @@ if __name__ == "__main__":
 
     # env setup
     env_kwargs = dict(control_mode=args.control_mode, reward_mode="sparse", obs_mode="state", render_mode="rgb_array", human_render_camera_configs=dict(shader_pack="default"))
+    if args.render_backend == "none" and args.capture_video:
+        raise ValueError("render_backend=none requires --no-capture-video")
+    env_kwargs["render_backend"] = args.render_backend
+    if args.render_backend == "none":
+        env_kwargs["render_mode"] = None
     env_kwargs.update(_demo_scene_kwargs)   # eval env matches the demos (parcels/bins/randomisation)
     assert args.max_episode_steps != None, "max_episode_steps must be specified as imitation learning algorithms task solve speed is dependent on the data you train on"
     env_kwargs["max_episode_steps"] = args.max_episode_steps

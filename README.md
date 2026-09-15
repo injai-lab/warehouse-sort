@@ -21,8 +21,17 @@ cd '/home/student/projects/Robot Parcel Sorting Challenge'
 source .venv/bin/activate
 ```
 
-대회 패키지 설치와 데이터 다운로드는 아직 시작하지 않았습니다.
-Python 및 PyTorch 조합은 대회 공식 요구사항 확인 후 확정합니다.
+공식 소스 커밋 `6048f33217f26ae39009a812f53c81171517f393`을 도입했습니다.
+설치 및 검증 상태는 아래 문서를 확인하세요.
+
+- [V100 설치와 실행 명령](docs/SETUP_V100.md)
+- [공식 출처·커밋·라이선스 상태](docs/UPSTREAM.md)
+- [공식 README 사본](docs/upstream/README.md)
+- [공식 학습 안내](il/README.md)
+- [공식 제출 안내](SUBMISSION.md)
+- [현재 검증 결과](experiments/2026-09-15-setup.md)
+
+시스템 환경은 유지하고 `.venv`만 사용합니다. 데이터와 체크포인트는 Git에 올리지 않습니다.
 
 ## Git 관리 범위
 

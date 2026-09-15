@@ -31,3 +31,9 @@ Activation:
 cd '/home/student/projects/Robot Parcel Sorting Challenge'
 source .venv/bin/activate
 ```
+
+## Follow-up setup
+
+The initial snapshot above is retained as historical inspection. The project environment
+now contains the V100 package stack and passes CUDA/state probes. See
+[the setup experiment report](experiments/2026-09-15-setup.md) for current results and blockers.

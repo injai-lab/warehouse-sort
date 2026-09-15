@@ -28,3 +28,7 @@ eval_config: null
 # policy entrypoint "module:function" — required for eval.py / the judge
 # e.g.  policy=warehouse_sort.il_policy:load_dp_rgb
 policy: null
+
+# Keep upstream rendering by default; V100 headless runs can opt out explicitly.
+render_backend: gpu
+capture_video: true

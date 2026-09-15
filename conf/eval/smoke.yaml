@@ -1,0 +1,4 @@
+# Two complete easy episodes. This is a pipeline check, not a benchmark score.
+eval:
+  n_episodes: 2
+  seeds: [5000, 5001]

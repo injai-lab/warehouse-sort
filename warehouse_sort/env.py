@@ -159,9 +159,11 @@ class WarehouseSortEnv(BaseEnv):
         bx, by = self.bin_half
         h, t, ft = self.bin_wall_h, self.bin_wall_t, self.bin_floor_t
         builder = self.scene.create_actor_builder()
-        mat = sapien.render.RenderMaterial(base_color=[*color, 1.0])
+        mat = (sapien.render.RenderMaterial(base_color=[*color, 1.0])
+               if self.scene.can_render() else None)
         builder.add_box_collision(pose=sapien.Pose(p=[0, 0, ft]), half_size=[bx, by, ft])
-        builder.add_box_visual(pose=sapien.Pose(p=[0, 0, ft]), half_size=[bx, by, ft], material=mat)
+        if self.scene.can_render():
+            builder.add_box_visual(pose=sapien.Pose(p=[0, 0, ft]), half_size=[bx, by, ft], material=mat)
         walls = [
             ([bx, 0, h], [t, by, h]),
             ([-bx, 0, h], [t, by, h]),
@@ -170,7 +172,8 @@ class WarehouseSortEnv(BaseEnv):
         ]
         for p, hs in walls:
             builder.add_box_collision(pose=sapien.Pose(p=p), half_size=hs)
-            builder.add_box_visual(pose=sapien.Pose(p=p), half_size=hs, material=mat)
+            if self.scene.can_render():
+                builder.add_box_visual(pose=sapien.Pose(p=p), half_size=hs, material=mat)
         builder.initial_pose = sapien.Pose(p=[0, 0, 0])
         return builder.build_kinematic(name=name)
 
@@ -188,17 +191,19 @@ class WarehouseSortEnv(BaseEnv):
             tagcol = np.clip(np.array(TAG_BASE_COLORS[tag_id]) + t_off, 0.05, 0.98)
             b = self.scene.create_actor_builder()
             b.add_box_collision(half_size=[phx, phy, phz])
-            b.add_box_visual(
-                half_size=[phx, phy, phz],
-                material=sapien.render.RenderMaterial(base_color=[*cardboard.tolist(), 1.0]),
-            )
+            if self.scene.can_render():
+                b.add_box_visual(
+                    half_size=[phx, phy, phz],
+                    material=sapien.render.RenderMaterial(base_color=[*cardboard.tolist(), 1.0]),
+                )
             tag_x = phx - thx - 0.004
             tag_y = phy - thy - 0.004
-            b.add_box_visual(
-                pose=sapien.Pose(p=[-tag_x, tag_y, phz + thz]),
-                half_size=[thx, thy, thz],
-                material=sapien.render.RenderMaterial(base_color=[*tagcol.tolist(), 1.0]),
-            )
+            if self.scene.can_render():
+                b.add_box_visual(
+                    pose=sapien.Pose(p=[-tag_x, tag_y, phz + thz]),
+                    half_size=[thx, thy, thz],
+                    material=sapien.render.RenderMaterial(base_color=[*tagcol.tolist(), 1.0]),
+                )
             b.set_scene_idxs([i])
             b.initial_pose = sapien.Pose(p=[0, 0, phz + 0.5 * i])  # spread to avoid init overlap
             per_env.append(b.build_dynamic(name=f"parcel_{idx}_env{i}"))
@@ -213,14 +218,16 @@ class WarehouseSortEnv(BaseEnv):
             tc = table_colors[int(rng[i].randint(0, len(table_colors)))]
             fc = floor_colors[int(rng[i].randint(0, len(floor_colors)))]
             tb = self.scene.create_actor_builder()
-            tb.add_box_visual(half_size=[0.66, 1.25, 0.0015],
-                              material=sapien.render.RenderMaterial(base_color=[*tc, 1.0]))
+            if self.scene.can_render():
+                tb.add_box_visual(half_size=[0.66, 1.25, 0.0015],
+                                  material=sapien.render.RenderMaterial(base_color=[*tc, 1.0]))
             tb.set_scene_idxs([i])
             tb.initial_pose = sapien.Pose(p=[-0.135, 0, 0.0015])
             tops.append(tb.build_static(name=f"table_surface_env{i}"))
             fb = self.scene.create_actor_builder()
-            fb.add_box_visual(half_size=[2.5, 2.5, 0.001],
-                              material=sapien.render.RenderMaterial(base_color=[*fc, 1.0]))
+            if self.scene.can_render():
+                fb.add_box_visual(half_size=[2.5, 2.5, 0.001],
+                                  material=sapien.render.RenderMaterial(base_color=[*fc, 1.0]))
             fb.set_scene_idxs([i])
             fb.initial_pose = sapien.Pose(p=[0, 0, -0.5])
             floors.append(fb.build_static(name=f"floor_mat_env{i}"))

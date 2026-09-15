@@ -50,6 +50,10 @@ def main(cfg):
                   hard=(cfg.difficulty.name == "hard"))
     env.close()
 
+    if not cfg.get("capture_video", True):
+        print("[eval] video disabled by capture_video=false", flush=True)
+        return
+
     # every eval run also saves a video (RecordEpisode, all views: render + scene sensor cam)
     out_dir = hydra.core.hydra_config.HydraConfig.get().runtime.output_dir
     vid_dir = os.path.join(out_dir, "videos")

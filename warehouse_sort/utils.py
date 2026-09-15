@@ -19,6 +19,7 @@ def _gym_make(cfg, obs_mode, randomization, n, render_mode):
         obs_mode=obs_mode,
         control_mode=cfg.control_mode,
         sim_backend="gpu",
+        render_backend=cfg.get("render_backend", "gpu"),
         render_mode=render_mode,
         reward_mode="sparse",
         max_episode_steps=cfg.max_episode_steps,
