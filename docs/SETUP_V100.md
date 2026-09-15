@@ -120,4 +120,5 @@ KAGGLE_CONFIG_DIR="$HOME/.kaggle" .venv/bin/python scripts/fetch_easy_state.py
 ```
 
 The Kaggle account must have accepted the competition terms. Authenticated access and
-remote file sizes are not yet verified. No data or model has been downloaded/trained.
+remote file sizes have now been verified (see docs/DATA_MANIFEST.json). The authenticated
+download is blocked by missing competition-rule acceptance. No demo data or model has been downloaded/trained.

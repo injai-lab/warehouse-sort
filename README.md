@@ -29,7 +29,8 @@ source .venv/bin/activate
 - [공식 README 사본](docs/upstream/README.md)
 - [공식 학습 안내](il/README.md)
 - [공식 제출 안내](SUBMISSION.md)
-- [현재 검증 결과](experiments/2026-09-15-setup.md)
+- [환경 검증 결과](experiments/2026-09-15-setup.md)
+- [현재 데이터 접근 상태](experiments/2026-09-15-data-access.md)
 
 시스템 환경은 유지하고 `.venv`만 사용합니다. 데이터와 체크포인트는 Git에 올리지 않습니다.
 

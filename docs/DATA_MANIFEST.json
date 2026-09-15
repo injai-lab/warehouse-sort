@@ -1,0 +1,64 @@
+{
+  "competition": "marso-hack-berlin-2026-robot-parcel-sorting-challenge",
+  "files": [
+    {
+      "name": "easy/trajectory.rgb.pd_ee_delta_pos.physx_cuda.h5",
+      "bytes": 71298566
+    },
+    {
+      "name": "easy/trajectory.rgb.pd_ee_delta_pos.physx_cuda.json",
+      "bytes": 52259
+    },
+    {
+      "name": "easy/trajectory.state.pd_ee_delta_pos.physx_cuda.h5",
+      "bytes": 15260186
+    },
+    {
+      "name": "easy/trajectory.state.pd_ee_delta_pos.physx_cuda.json",
+      "bytes": 52261
+    },
+    {
+      "name": "hard/trajectory.rgb.pd_ee_delta_pos.physx_cuda.h5",
+      "bytes": 248018085
+    },
+    {
+      "name": "hard/trajectory.rgb.pd_ee_delta_pos.physx_cuda.json",
+      "bytes": 33978
+    },
+    {
+      "name": "hard/trajectory.state.pd_ee_delta_pos.physx_cuda.h5",
+      "bytes": 77031173
+    },
+    {
+      "name": "hard/trajectory.state.pd_ee_delta_pos.physx_cuda.json",
+      "bytes": 52266
+    },
+    {
+      "name": "medium/trajectory.rgb.pd_ee_delta_pos.physx_cuda.h5",
+      "bytes": 147836606
+    },
+    {
+      "name": "medium/trajectory.rgb.pd_ee_delta_pos.physx_cuda.json",
+      "bytes": 33979
+    },
+    {
+      "name": "medium/trajectory.state.pd_ee_delta_pos.physx_cuda.h5",
+      "bytes": 38742865
+    },
+    {
+      "name": "medium/trajectory.state.pd_ee_delta_pos.physx_cuda.json",
+      "bytes": 52267
+    }
+  ],
+  "selected": [
+    {
+      "name": "easy/trajectory.state.pd_ee_delta_pos.physx_cuda.h5",
+      "bytes": 15260186
+    },
+    {
+      "name": "easy/trajectory.state.pd_ee_delta_pos.physx_cuda.json",
+      "bytes": 52261
+    }
+  ],
+  "selected_bytes": 15312447
+}
