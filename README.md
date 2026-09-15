@@ -24,6 +24,7 @@ source .venv/bin/activate
 공식 소스 커밋 `6048f33217f26ae39009a812f53c81171517f393`을 도입했습니다.
 설치 및 검증 상태는 아래 문서를 확인하세요.
 
+- [한국어 실습 안내: 구조, 주요 파일, 설정 변경, 학습과 평가](docs/PRACTICE_GUIDE_KO.md)
 - [V100 설치와 실행 명령](docs/SETUP_V100.md)
 - [공식 출처·커밋·라이선스 상태](docs/UPSTREAM.md)
 - [공식 README 사본](docs/upstream/README.md)
