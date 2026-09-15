@@ -1,5 +1,9 @@
 # 2026-09-15 — authenticated data inventory
 
+**Resolved follow-up:** official easy/state data was downloaded and the 20-update
+training/save/reload/evaluation smoke completed. See [the final smoke report](2026-09-15-state-easy-smoke.md).
+Earlier results below are retained as history.
+
 ## Result
 
 Kaggle credentials supplied by the user were validated locally and configured outside the

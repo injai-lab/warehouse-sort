@@ -84,6 +84,15 @@ The learning-rate warmup remains the upstream 500 steps; 20 iterations test exec
 Explicit checkpoint saving avoids reliance on `best_eval_sort_accuracy.pt`, which upstream
 only writes after a strict improvement above zero.
 
+Checkpoint validation after training:
+
+```bash
+scripts/run_v100.sh scripts/inspect_smoke_checkpoint.py
+```
+
+These commands have now passed end to end. See
+[the smoke result](../experiments/2026-09-15-state-easy-smoke.md).
+
 ### Headless options added locally
 
 - `render_backend` and `capture_video` in the root Hydra config retain defaults `gpu` / `true`.
@@ -120,5 +129,6 @@ KAGGLE_CONFIG_DIR="$HOME/.kaggle" .venv/bin/python scripts/fetch_easy_state.py
 ```
 
 The Kaggle account must have accepted the competition terms. Authenticated access and
-remote file sizes have now been verified (see docs/DATA_MANIFEST.json). The authenticated
-download is blocked by missing competition-rule acceptance. No demo data or model has been downloaded/trained.
+remote file sizes have been verified (see DATA_MANIFEST.json). After user rule acceptance,
+the easy/state pair was downloaded and the 20-update training/save/reload/evaluation smoke
+passed. No long training was started.

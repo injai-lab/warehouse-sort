@@ -11,11 +11,15 @@
     },
     {
       "name": "easy/trajectory.state.pd_ee_delta_pos.physx_cuda.h5",
-      "bytes": 15260186
+      "bytes": 15260186,
+      "local_path": "il/demos/easy/trajectory.state.pd_ee_delta_pos.physx_cuda.h5",
+      "sha256": "8bdd9eccdab4643040a7269c215efd90267198ba5b4bfeba2049183fd2665593"
     },
     {
       "name": "easy/trajectory.state.pd_ee_delta_pos.physx_cuda.json",
-      "bytes": 52261
+      "bytes": 52261,
+      "local_path": "il/demos/easy/trajectory.state.pd_ee_delta_pos.physx_cuda.json",
+      "sha256": "0e5a5ad61b9e5725b5f1526915804a4dd7c34c139cee88d8b998fd81f5347bbd"
     },
     {
       "name": "hard/trajectory.rgb.pd_ee_delta_pos.physx_cuda.h5",
@@ -53,12 +57,17 @@
   "selected": [
     {
       "name": "easy/trajectory.state.pd_ee_delta_pos.physx_cuda.h5",
-      "bytes": 15260186
+      "bytes": 15260186,
+      "local_path": "il/demos/easy/trajectory.state.pd_ee_delta_pos.physx_cuda.h5",
+      "sha256": "8bdd9eccdab4643040a7269c215efd90267198ba5b4bfeba2049183fd2665593"
     },
     {
       "name": "easy/trajectory.state.pd_ee_delta_pos.physx_cuda.json",
-      "bytes": 52261
+      "bytes": 52261,
+      "local_path": "il/demos/easy/trajectory.state.pd_ee_delta_pos.physx_cuda.json",
+      "sha256": "0e5a5ad61b9e5725b5f1526915804a4dd7c34c139cee88d8b998fd81f5347bbd"
     }
   ],
-  "selected_bytes": 15312447
+  "selected_bytes": 15312447,
+  "downloaded": true
 }

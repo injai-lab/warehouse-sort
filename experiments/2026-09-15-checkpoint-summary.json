@@ -1,0 +1,44 @@
+{
+  "checkpoint": "il/baselines/diffusion_policy/runs/warehouse_state_dp_smoke/checkpoints/19.pt",
+  "bytes": 35921033,
+  "sha256": "5ffca2c673d65356e46e6c80eb9325c3c1e262021478a21ddfea91871e78d102",
+  "weights": {
+    "agent": {
+      "tensors": 148,
+      "changed_since_iteration_0": 148,
+      "all_finite": true
+    },
+    "ema_agent": {
+      "tensors": 148,
+      "changed_since_iteration_0": 148,
+      "all_finite": true
+    }
+  },
+  "loss": {
+    "first": 1.1440119743347168,
+    "last": 1.0388448238372803,
+    "logged_steps": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20
+    ]
+  }
+}
