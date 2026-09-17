@@ -6,6 +6,7 @@ with sync_playwright() as p:
  errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
  page.goto('http://127.0.0.1:8765/')
  page.wait_for_function('window.viewerMeshesReady === true',timeout=60000)
+ page.select_option('#mode','full');page.wait_for_function('window.viewerState.mode==="full" && window.viewerState.step===0',timeout=30000)
  page.screenshot(path='runs/live-viewer-initial.png')
  page.click('#play');page.wait_for_function('window.viewerState.step >= 12',timeout=60000)
  page.click('#pause');page.wait_for_timeout(1500)

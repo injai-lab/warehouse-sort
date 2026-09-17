@@ -19,6 +19,7 @@ import xml.etree.ElementTree as ET
 import numpy as np
 import torch
 import eval_easy_aligned as aligned
+from warehouse_sort.demo_restore import restore_demo70
 
 ROOT=aligned.ROOT
 TOKEN=secrets.token_urlsafe(32)
@@ -69,12 +70,15 @@ def simulation():
         assert len(agent.noise_scheduler.timesteps)==100 and args.act_horizon==8
         base=env.unwrapped
         seeds=[100000,100001,100002,100003]
-        obs,_=env.reset(seed=seeds)
+        mode='demo70';limit=45
+        obs,expert,restoration=restore_demo70(env)
+        torch.manual_seed(20260915)
         step=0;sequence=None;cursor=0;playing=False;action=torch.zeros((4,4),device='cuda')
         publish(visuals=visuals,seeds=seeds,checkpoint_sha256=digest,status='ready',protocol='state · EMA · DDPM 100 · action chunk 8 · history 2')
 
         def snapshot():
-            publish(step=step,playing=playing,timestamp=time.time(),
+            publish(step=step,playing=playing,timestamp=time.time(),mode=mode,limit=limit,seeds=seeds if mode=='full' else [1000]*4,source_step=None if mode=='full' else 70+step,
+                restoration=None if mode=='full' else restoration,
                 links={link.name:link.pose.raw_pose.cpu().tolist() for link in base.agent.robot.get_links()},
                 parcels=[p.pose.raw_pose.cpu().tolist() for p in base.parcels],
                 bins=[p.pose.raw_pose.cpu().tolist() for p in base.bins],
@@ -86,24 +90,36 @@ def simulation():
             with lock:
                 pending=list(commands);commands.clear()
             for command in pending:
-                if command=='play' and step<200: playing=True
+                if command=='play' and step<limit: playing=True
                 elif command=='pause': playing=False
-                elif command=='reset':
-                    playing=False;obs,_=env.reset(seed=seeds);step=0;sequence=None;cursor=0
+                elif command=='reset' or command.startswith('mode-'):
+                    if command.startswith('mode-'):mode=command[5:]
+                    playing=False
+                    if mode=='full':
+                        obs,_=env.reset(seed=seeds);limit=200
+                    else:
+                        obs,expert,restoration=restore_demo70(env)
+                        torch.manual_seed(20260915)
+                        limit=45 if mode=='demo70' else 200
+                    step=0;sequence=None;cursor=0
                     action.zero_();publish(status='ready')
             if not playing:
                 if pending:snapshot()
                 stopping.wait(.1);continue
             started=time.monotonic()
-            if sequence is None or cursor==8:
-                publish(status='inferring',playing=True)
-                sequence=agent.get_action(obs);cursor=0
+            if mode=='demo70':
+                action=expert[step][None].repeat(4,1)
+            else:
+                if sequence is None or cursor==8:
+                    publish(status='inferring',playing=True)
+                    sequence=agent.get_action(obs);cursor=0
+                action=sequence[:,cursor];cursor+=1
             if stopping.is_set():break
-            action=sequence[:,cursor];cursor+=1
             obs,_,_,truncated,_=env.step(action);step+=1
-            if step==200:
-                assert truncated.all();playing=False
-            publish(status='finished' if step==200 else 'running')
+            if step==limit:
+                if limit==200:assert truncated.all()
+                playing=False
+            publish(status='finished' if step==limit else 'running')
             snapshot()
             stopping.wait(max(0,.05-(time.monotonic()-started)))
     except Exception as exc:
@@ -159,7 +175,7 @@ class Handler(BaseHTTPRequestHandler):
             size=int(self.headers.get('Content-Length','0'))
             if not 0<size<256:raise ValueError()
             command=json.loads(self.rfile.read(size))['command']
-            if command not in ('play','pause','reset'):raise ValueError()
+            if command not in ('play','pause','reset','mode-full','mode-demo70','mode-model70'):raise ValueError()
         except (ValueError,KeyError):return self.send(400,b'Bad request','text/plain')
         with lock:
             if len(commands)<16:commands.append(command)

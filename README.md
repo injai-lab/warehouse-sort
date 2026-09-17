@@ -36,6 +36,7 @@ source .venv/bin/activate
 - [최신 결과: 전체 200개 시범·30,000회 본학습](experiments/2026-09-15-easy-full.md)
 - [평가 방식 정렬: 같은 최고 모델·20개 시드 비교](experiments/2026-09-15-aligned-evaluation.md)
 - [두 번째 상자 실패 진단: 숫자 로그·시범 비교·600스텝 확인](experiments/2026-09-15-second-parcel-diagnosis.md)
+- [시범 70스텝 복원 비교: 시범과 모델 모두 두 번째 상자 성공](experiments/2026-09-17-demo70-comparison.md)
 - [실시간 브라우저 관람: VS Code 비공개 포트 전달](docs/LIVE_VIEWER_KO.md)
 - [별도 과제: Vulkan 영상](docs/VULKAN_TODO.md)
 
