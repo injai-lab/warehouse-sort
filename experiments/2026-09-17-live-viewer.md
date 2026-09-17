@@ -14,3 +14,12 @@
 - Browser test initially failed on missing shared libraries; resolved using project-local extraction. Some stale apt update URLs returned 404; downloaded explicit noble base versions instead.
 
 [Connection, start/stop, file map, limitations, and administrator requirements](../docs/LIVE_VIEWER_KO.md).
+
+## Blank-screen recovery
+
+User screenshot confirmed successful private-tunnel HTML access but initialization remained stuck.
+Client cause not established from screenshot alone. Removed coupling between WebGL startup and
+state/control polling; added import timeout, visible initialization errors, and a Canvas live-pose
+fallback for blocked modules, failed WebGL, or mesh-load errors. Tested normal WebGL, disabled
+WebGL (including real policy movement), and blocked module download: all had usable state and
+controls, no uncaught JS exceptions. Refreshed HTML/JS are served without a simulator restart.

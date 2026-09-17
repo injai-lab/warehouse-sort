@@ -3,9 +3,50 @@
 <script type="importmap">{"imports":{"three":"./vendor/three.module.js"}}</script></head><body>
 <header><h1>WarehouseSort <small>LIVE</small></h1><small>실제 PhysX 상태 · 브라우저 3D 관람 · 모델 입력은 state</small></header>
 <main><div id="scene"><div id="hint">드래그: 회전 · 휠: 확대 · 우클릭 드래그: 이동</div></div><aside>
-<div id="status">시뮬레이터 준비 중…</div><p id="error"></p>
+<div id="status">서버 연결 확인 중…</div><p id="render-status">관람 화면 준비 중…</p><p id="error"></p>
 <button id="play" disabled>시작 / 계속</button><button id="pause">일시정지</button><button id="reset">처음부터</button>
 <p><label>관람 에피소드 <select id="episode"><option value="0">100000</option><option value="1">100001</option><option value="2">100002</option><option value="3">100003</option></select></label></p>
 <dl><dt>진행</dt><dd id="step">0 / 200</dd><dt>정분류 — 빨강 / 파랑</dt><dd id="correct">—</dd><dt>잡기 — 빨강 / 파랑</dt><dd id="grasp">—</dd><dt>집게 XYZ (m)</dt><dd id="tcp">—</dd><dt>최근 행동 XYZ / 집게</dt><dd id="action">—</dd><dt>추론</dt><dd>최고 EMA · DDPM 100회<br>8개 행동 실행 · 관측 2프레임</dd></dl>
 <small>추론 중에는 화면이 잠시 멈출 수 있습니다. 200스텝 후 자동 일시정지합니다. 다시 시작하면 같은 환경 시드를 사용하지만 추론 난수 흐름은 이어집니다.</small>
-</aside></main><script>window.controlKey='__CONTROL_TOKEN__';</script><script type="module" src="./viewer.js"></script></body></html>
+</aside></main><script>window.controlKey='__CONTROL_TOKEN__';</script><script>
+(()=>{
+const el=id=>document.getElementById(id);let last=null,view=null,renderWarning='',pollError='';
+const showError=()=>el('error').textContent=[renderWarning,pollError].filter(Boolean).join('\n');
+function fallback(reason){
+ if(view&&view.dispose)view.dispose();
+ document.querySelectorAll('#scene canvas').forEach(c=>c.remove());
+ const canvas=document.createElement('canvas');el('scene').appendChild(canvas);const ctx=canvas.getContext('2d');
+ renderWarning='3D 화면을 불러오지 못해 호환 화면으로 표시합니다. '+reason;
+ el('render-status').textContent='호환 화면 · 실제 위치를 투영한 단순 도형';
+ showError();window.viewerMode='canvas';
+ const project=p=>{const w=canvas.width,h=canvas.height,k=Math.min(w,h)*.65;return [w*.48+(p[0]-.7*p[1]+.15)*k,h*.68+(.35*p[0]+.5*p[1]-p[2])*k];};
+ function draw(s){if(!s||!s.links||!ctx)return;const i=+el('episode').value;canvas.width=el('scene').clientWidth;canvas.height=el('scene').clientHeight;ctx.fillStyle='#162231';ctx.fillRect(0,0,canvas.width,canvas.height);
+ const poly=(points,color)=>{ctx.beginPath();points.map(project).forEach((p,j)=>j?ctx.lineTo(...p):ctx.moveTo(...p));ctx.closePath();ctx.fillStyle=color;ctx.fill();};
+ poly([[-.85,-.6,0],[.65,-.6,0],[.65,.6,0],[-.85,.6,0]],'#707e8b');
+ s.bins.forEach((poses,j)=>{const p=poses[i];poly([[-.11,-.13],[.11,-.13],[.11,.13],[-.11,.13]].map(q=>[q[0]+p[0],q[1]+p[1],p[2]+.005]),j?'#337cde':'#d7494d');});
+ s.parcels.forEach((poses,j)=>{const p=poses[i],v=project(p);ctx.fillStyle=j?'#65a5ff':'#ff7474';ctx.fillRect(v[0]-12,v[1]-15,24,24);ctx.fillStyle='white';ctx.font='13px system-ui';ctx.fillText(j?'파랑':'빨강',v[0]+15,v[1]);});
+ const chain=['panda_link0','panda_link1','panda_link2','panda_link3','panda_link4','panda_link5','panda_link6','panda_link7','panda_hand'];
+ ctx.strokeStyle='#e7edf4';ctx.lineWidth=13;ctx.lineCap='round';ctx.beginPath();let first=true;
+ for(const n of chain){if(!s.links[n])continue;const p=project(s.links[n][i]);first?ctx.moveTo(...p):ctx.lineTo(...p);first=false;}ctx.stroke();
+ for(const n of chain){if(!s.links[n])continue;const p=project(s.links[n][i]);ctx.beginPath();ctx.arc(...p,8,0,Math.PI*2);ctx.fillStyle='#98aabb';ctx.fill();}
+ for(const n of ['panda_leftfinger','panda_rightfinger']){if(!s.links[n])continue;const p=project(s.links[n][i]);ctx.fillStyle='#fff';ctx.fillRect(p[0]-3,p[1]-6,6,12);}
+ const tcp=project(s.tcp[i]);ctx.strokeStyle='#f3db75';ctx.lineWidth=2;ctx.strokeRect(tcp[0]-7,tcp[1]-7,14,14);
+ }
+ view={apply:draw,dispose(){canvas.remove();}};el('hint').textContent='호환 화면: 실제 로봇 관절·상자 위치의 고정 시점 투영';if(last)view.apply(last);
+}
+const labels={loading:'시뮬레이터 준비 중',ready:'일시정지',inferring:'행동 예측 중',running:'실시간 실행 중',finished:'200스텝 완료',error:'서버 실행 오류'};
+async function poll(){try{const r=await fetch('./state',{cache:'no-store',signal:AbortSignal.timeout(10000)});if(!r.ok)throw Error('상태 HTTP '+r.status);const s=await r.json();last=s;window.viewerState=s;
+ el('status').textContent=s.playing?(labels[s.status]||s.status):(s.status==='ready'||s.status==='running'||s.status==='inferring'?'일시정지':labels[s.status]||s.status);
+ el('play').disabled=!s.links||s.step>=200;const i=+el('episode').value;el('step').textContent=s.step+' / 200';
+ if(s.links){el('correct').textContent=s.correct[i].map(x=>x?'성공':'미완료').join(' / ');el('grasp').textContent=s.grasped[i].map(x=>x?'잡음':'없음').join(' / ');el('tcp').textContent=s.tcp[i].map(x=>x.toFixed(3)).join(', ');el('action').textContent=s.action[i].map(x=>x.toFixed(3)).join(', ');if(view)view.apply(s);}
+ pollError=s.error||'';showError();}catch(e){pollError='서버 연결 오류: '+e.message;showError();}finally{setTimeout(poll,150);}}
+ for(const command of ['play','pause','reset'])el(command).onclick=async()=>{try{const r=await fetch('./control',{method:'POST',headers:{'Content-Type':'application/json','X-Control-Key':window.controlKey},body:JSON.stringify({command}),signal:AbortSignal.timeout(10000)});if(!r.ok)throw Error('HTTP '+r.status);}catch(e){pollError='제어 요청 실패: '+e.message;showError();}};
+ el('episode').onchange=()=>{if(view&&last)view.apply(last);};window.addEventListener('resize',()=>{if(view&&last)view.apply(last);});
+ window.addEventListener('viewer-render-error',e=>fallback(e.detail));
+ poll();
+ el('render-status').textContent='3D 코드 다운로드 중…';
+ Promise.race([import('./viewer.js?v=2'),new Promise((_,reject)=>setTimeout(()=>reject(Error('3D 코드 다운로드가 20초를 넘었습니다.')),20000))]).then(module=>{
+  try{view=module.createViewer();window.viewerMode='webgl';el('render-status').textContent='3D 화면 연결됨';if(last)view.apply(last);}catch(e){fallback('WebGL 초기화: '+e.message);}
+ }).catch(e=>fallback('코드 로딩: '+e.message));
+})();
+</script></body></html>
