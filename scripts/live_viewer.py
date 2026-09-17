@@ -1,5 +1,7 @@
 """Loopback-only live PhysX state viewer. Rendering happens in the browser, never in the policy."""
 import argparse
+import gzip
+from functools import lru_cache
 import hashlib
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import json
@@ -112,13 +114,28 @@ def simulation():
         if env is not None:env.close()
 
 
+@lru_cache(maxsize=32)
+def compressed(body):
+    return gzip.compress(body,compresslevel=5)
+
+
+class ViewerServer(ThreadingHTTPServer):
+    request_queue_size=128
+    daemon_threads=True
+
+
 class Handler(BaseHTTPRequestHandler):
+    protocol_version="HTTP/1.1"
     def log_message(self,*args):pass
     def send(self,status,body,mime):
+        use_gzip='gzip' in self.headers.get('Accept-Encoding','') and len(body)>512
+        if use_gzip:body=compressed(body)
         self.send_response(status)
+        if use_gzip:self.send_header('Content-Encoding','gzip')
+        self.send_header('Vary','Accept-Encoding')
         self.send_header('Content-Type',mime)
         self.send_header('Content-Length',str(len(body)))
-        self.send_header('Cache-Control','no-store')
+        self.send_header('Cache-Control','private, max-age=86400' if mime=='model/gltf-binary' else 'no-store')
         self.send_header('X-Content-Type-Options','nosniff')
         self.end_headers()
         try:self.wfile.write(body)
@@ -129,7 +146,7 @@ class Handler(BaseHTTPRequestHandler):
             with lock:body=json.dumps(state).encode()
             return self.send(200,body,'application/json')
         if path in ('/','/index.html'):
-            return self.send(200,(ROOT/'web/live-viewer/index.html').read_bytes().replace(b'__CONTROL_TOKEN__',TOKEN.encode()),'text/html; charset=utf-8')
+            return self.send(200,(ROOT/'web/live-viewer/index.html').read_bytes().replace(b'__CONTROL_TOKEN__',TOKEN.encode()).replace(b'__VIEWER_BUNDLE__',(ROOT/'.cache/live-viewer/bundle.js').read_bytes().replace(b'</script',b'<\\/script')),'text/html; charset=utf-8')
         if path=='/viewer.js':return self.send(200,(ROOT/'web/live-viewer/viewer.js').read_bytes(),'text/javascript')
         assets={f'/vendor/{name}':ROOT/'.cache/live-viewer'/name for name in ('three.module.js','OrbitControls.js','GLTFLoader.js','BufferGeometryUtils.js','LICENSE')}
         if path in assets and assets[path].is_file():return self.send(200,assets[path].read_bytes(),'text/javascript' if path.endswith('.js') else 'text/plain')
@@ -152,9 +169,9 @@ class Handler(BaseHTTPRequestHandler):
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--port',type=int,default=8765)
     args=parser.parse_args()
-    if not (ROOT/'.cache/live-viewer/three.module.js').is_file():
-        raise SystemExit('First run: .venv/bin/python scripts/setup_live_viewer_assets.py')
-    server=ThreadingHTTPServer(('127.0.0.1',args.port),Handler)
+    if not (ROOT/'.cache/live-viewer/bundle.js').is_file():
+        raise SystemExit('First run setup_live_viewer_assets.py, then build_live_viewer.py with .venv/bin/python')
+    server=ViewerServer(('127.0.0.1',args.port),Handler)
     pidfile=ROOT/'runs/live-viewer.pid'
     pidfile.write_text(str(os.getpid())+'\n')
     def stop_signal(signum, frame):

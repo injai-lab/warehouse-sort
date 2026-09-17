@@ -72,11 +72,12 @@ kill -INT "$(cat runs/live-viewer.pid)"
 | `scripts/live_viewer.py` | 127.0.0.1 HTTP 서버, 기존 모델 로딩, 실제 시뮬레이션, 상태 전송, 제어 |
 | `web/live-viewer/index.html` | 관람 화면, 버튼, 에피소드 선택, 지표 패널 |
 | `web/live-viewer/viewer.js` | 로봇 메시 로딩, 실제 자세 적용, WebGL 렌더링, 카메라 |
+| `scripts/build_live_viewer.py` | 로컬 3D 코드를 단일 파일로 번들링(고정 버전 esbuild) |
 | `scripts/setup_live_viewer_assets.py` | 고정 버전 Three.js를 프로젝트 캐시에 다운로드·해시 검사 |
 | `scripts/check_live_viewer_browser.py` | 개발용 실제 브라우저 동작 검사 |
 | `scripts/run_v100.sh` | 프로젝트 Python과 로컬 라이브러리, GPU 선택 |
 
-데이터 전송은 약 100ms 간격 HTTP polling입니다. 브라우저 카메라 조작은 독립적으로 렌더링합니다.
+데이터 전송은 실행 중 약 200ms, 일시정지 중 약 1초 간격 HTTP polling입니다. 브라우저 카메라 조작은 독립적으로 렌더링합니다.
 물리 진행은 최대 20스텝/초로 제한하며 100회 노이즈 제거 중에는 새 상태가 잠시 도착하지 않을 수 있습니다.
 실시간 관람이지만 1초의 물리 시간을 반드시 1초의 벽시계 시간에 처리한다는 보장은 없습니다.
 상자 정분류 표시는 환경의 누적 `_placed_correct`이고, 잡기는 상자별 실제 `is_grasping`입니다.
@@ -91,6 +92,7 @@ Three.js **0.170.0 (MIT)**는 `.cache/live-viewer/`에만 저장하며, 접속 �
 
 ```bash
 .venv/bin/python scripts/setup_live_viewer_assets.py
+.venv/bin/python scripts/build_live_viewer.py
 ```
 
 Three.js 출처: `https://registry.npmjs.org/three/-/three-0.170.0.tgz`
@@ -129,8 +131,18 @@ SAPIEN 자체 카메라 렌더링을 복구하려면 관리자에게 컨테이�
 ## 페이지는 열리지만 화면이 비어 있을 때
 
 페이지를 `Ctrl+Shift+R`로 새로고침하세요. 서버 상태와 제어 버튼은 이제 3D 코드 로딩과 별도로 동작합니다.
-3D 코드 다운로드가 20초를 넘거나 WebGL/로봇 메시 초기화에 실패하면, 오류 문구와 함께 Canvas 호환 화면으로 전환합니다.
+3D 코드는 현재 HTML에 번들로 포함됩니다. WebGL/로봇 메시 초기화에 실패하면 오류 문구와 함께 Canvas 호환 화면으로 전환합니다.
 호환 화면은 실제 링크·상자 좌표를 고정 시점으로 투영한 단순 도형이며 Panda 원본 메시 화면과 다릅니다. 모델 입력과 물리 실행은 동일합니다.
 표시된 `WebGL 초기화`, `코드 로딩`, `로봇 메시 로딩`, `서버 연결` 오류 문구로 실패 단계를 구분할 수 있습니다.
 사용자 스크린샷만으로 실제 PC의 정확한 실패 원인은 확정하지 않았습니다.
 정상 WebGL, WebGL 비활성화, 모듈 요청 차단 세 경우에서 상태·버튼·화면 표시를 브라우저로 검증했습니다.
+
+## 터널 다운로드 지연 개선
+
+사용자 화면에서 3D 코드 다운로드 20초 초과와 상태 요청 10초 초과가 확인됐습니다. 로컬 응답은 수 ms였으나 실제 사용자 PC의 지연 발생 지점까지 확정한 것은 아닙니다.
+현재는 여러 JS 모듈(약 1.5MB)을 별도로 요청하지 않고 고정 esbuild 0.25.0으로 번들링해 HTML에 포함합니다.
+HTTP/1.1 keep-alive와 gzip을 사용하며 초기 HTML+코드는 약 154KB, 초기 상태 응답은 약 1.9KB입니다.
+로봇 메시 11개를 순차 다운로드해 상태/제어 요청의 연결 슬롯을 남겨 두고 브라우저에 메시를 캐시합니다.
+상태·제어 타임아웃은 30초이며, 그림에 마지막 상태가 남아 있어도 연결 오류가 표시되면 최신 상태가 아닐 수 있습니다.
+모델이나 시뮬레이터 설정은 바꾸지 않았고 바인딩은 127.0.0.1로 유지했습니다.
+`viewer.js`를 수정한 경우 `scripts/build_live_viewer.py`를 다시 실행해야 반영됩니다.

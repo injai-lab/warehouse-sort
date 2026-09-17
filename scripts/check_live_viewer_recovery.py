@@ -10,7 +10,7 @@ with sync_playwright() as p:
   if mode=='blocked-module':page.route('**/viewer.js?*',lambda route:route.abort())
   page.goto('http://127.0.0.1:8765/')
   page.wait_for_function('window.viewerState?.links && window.viewerMode',timeout=45000)
-  if mode=='normal':page.wait_for_function('window.viewerMeshesReady',timeout=45000)
+  if mode!='no-webgl':page.wait_for_function('window.viewerMeshesReady',timeout=45000)
   else:assert page.evaluate('window.viewerMode')=='canvas'
   assert page.locator('#play').is_enabled()
   assert page.locator('#tcp').inner_text()!='—'

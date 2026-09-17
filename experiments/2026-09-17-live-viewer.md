@@ -23,3 +23,11 @@ state/control polling; added import timeout, visible initialization errors, and 
 fallback for blocked modules, failed WebGL, or mesh-load errors. Tested normal WebGL, disabled
 WebGL (including real policy movement), and blocked module download: all had usable state and
 controls, no uncaught JS exceptions. Refreshed HTML/JS are served without a simulator restart.
+
+## Tunnel timeout follow-up
+
+User screenshot showed a 20-second module timeout and 10-second state-request timeout (not a confirmed WebGL failure). Local endpoints responded in milliseconds.
+Bundled JS into inline HTML, enabled gzip + HTTP/1.1 persistent connections, expanded accept backlog, sequenced mesh downloads, and slowed idle polling.
+Measured initial HTML+bundle 153,792 compressed bytes; initial state 1,894 bytes. Public exposure unchanged.
+The browser test emulates 250 ms latency and 128,000 bytes/s download and checks state/control while loading the actual robot meshes.
+Result: slow-network test loaded full WebGL robot meshes, advanced the real policy, paused and reset successfully; zero separate JS requests and zero JS exceptions. WebGL-disabled fallback also passed. Server left ready/paused at step 0.
