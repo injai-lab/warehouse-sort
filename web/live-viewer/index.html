@@ -1,0 +1,11 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>WarehouseSort · Live</title>
+<style>*{box-sizing:border-box}body{margin:0;background:#101722;color:#e7eef8;font:15px system-ui}header{padding:18px 24px;border-bottom:1px solid #324052;display:flex;gap:20px;align-items:center;flex-wrap:wrap}h1{font-size:20px;margin:0}small{color:#a5bad0}main{display:grid;grid-template-columns:1fr 290px;height:calc(100vh - 88px)}#scene{min-width:0;position:relative}canvas{display:block;width:100%;height:100%}aside{padding:22px;border-left:1px solid #324052;overflow:auto}button,select{padding:10px;border-radius:7px;border:1px solid #53657b;background:#24364b;color:white;margin:4px 2px;cursor:pointer}button:disabled{opacity:.4;cursor:wait}#play{background:#146958}dl{line-height:1.7}dt{color:#a5bad0;margin-top:15px}dd{margin:0;word-break:break-word}#hint{position:absolute;bottom:16px;left:18px;background:#101722cc;padding:9px;border-radius:6px;font-size:13px}#error{color:#ffb9ad;white-space:pre-wrap}code{font-size:13px} @media(max-width:750px){main{grid-template-columns:1fr;height:auto}#scene{height:65vh}aside{border:0}}</style>
+<script type="importmap">{"imports":{"three":"./vendor/three.module.js"}}</script></head><body>
+<header><h1>WarehouseSort <small>LIVE</small></h1><small>실제 PhysX 상태 · 브라우저 3D 관람 · 모델 입력은 state</small></header>
+<main><div id="scene"><div id="hint">드래그: 회전 · 휠: 확대 · 우클릭 드래그: 이동</div></div><aside>
+<div id="status">시뮬레이터 준비 중…</div><p id="error"></p>
+<button id="play" disabled>시작 / 계속</button><button id="pause">일시정지</button><button id="reset">처음부터</button>
+<p><label>관람 에피소드 <select id="episode"><option value="0">100000</option><option value="1">100001</option><option value="2">100002</option><option value="3">100003</option></select></label></p>
+<dl><dt>진행</dt><dd id="step">0 / 200</dd><dt>정분류 — 빨강 / 파랑</dt><dd id="correct">—</dd><dt>잡기 — 빨강 / 파랑</dt><dd id="grasp">—</dd><dt>집게 XYZ (m)</dt><dd id="tcp">—</dd><dt>최근 행동 XYZ / 집게</dt><dd id="action">—</dd><dt>추론</dt><dd>최고 EMA · DDPM 100회<br>8개 행동 실행 · 관측 2프레임</dd></dl>
+<small>추론 중에는 화면이 잠시 멈출 수 있습니다. 200스텝 후 자동 일시정지합니다. 다시 시작하면 같은 환경 시드를 사용하지만 추론 난수 흐름은 이어집니다.</small>
+</aside></main><script>window.controlKey='__CONTROL_TOKEN__';</script><script type="module" src="./viewer.js"></script></body></html>
