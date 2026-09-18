@@ -1,0 +1,240 @@
+{
+  "before": {
+    "label": "baseline",
+    "environment": "Chromium headless SwiftShader, viewport1280x850 DPR1.5; CDP latency100ms down256000B/s up128000B/s",
+    "elapsed_seconds": 35.272207820089534,
+    "render_fps": 13.929508758301386,
+    "render_submit_ms": {
+      "mean": 0.5619918679803367,
+      "p50": 0.5999999046325684,
+      "p95": 0.7999999523162842,
+      "count": 492
+    },
+    "fresh_state_fps": 1.587652246937171,
+    "fresh_states": 56,
+    "rtt_ms": {
+      "mean": 121.93333333333334,
+      "p50": 122.0,
+      "p95": 123.0,
+      "count": 105
+    },
+    "fresh_state_latency_ms": {
+      "mean": 220.3975088936942,
+      "p50": 173.5533447265625,
+      "p95": 407.35205078125,
+      "count": 56
+    },
+    "server": {
+      "state_extract": {
+        "count": 201,
+        "mean_ms": 8.167681885438402,
+        "p95_ms": 8.313515922054648,
+        "total_ms": 1641.7040589731187
+      },
+      "inference_100": {
+        "count": 25,
+        "mean_ms": 898.6887125857174,
+        "p95_ms": 903.9694565348327,
+        "total_ms": 22467.217814642936
+      },
+      "json_serialize": {
+        "count": 104,
+        "mean_ms": 1.1828628417928344,
+        "p95_ms": 1.4084207243286073,
+        "total_ms": 123.01773554645479
+      },
+      "gzip": {
+        "count": 104,
+        "mean_ms": 1.1531611783609081,
+        "p95_ms": 1.375780848320573,
+        "total_ms": 119.92876254953444
+      },
+      "socket_write": {
+        "count": 104,
+        "mean_ms": 0.1360612693063628,
+        "p95_ms": 0.0831700162962079,
+        "total_ms": 14.150372007861733
+      },
+      "physics_step": {
+        "count": 200,
+        "mean_ms": 48.81609565578401,
+        "p95_ms": 55.24030866799876,
+        "total_ms": 9763.219131156802
+      },
+      "iteration_work": {
+        "count": 200,
+        "mean_ms": 169.5317752950359,
+        "p95_ms": 958.1452807760797,
+        "total_ms": 33906.35505900718
+      },
+      "pacing_wait": {
+        "count": 200,
+        "mean_ms": 0.017553725047037005,
+        "p95_ms": 0.018794822972267866,
+        "total_ms": 3.510745009407401
+      },
+      "state": {
+        "step": 200,
+        "mode": "model70",
+        "action_sha256": "2a33872e751b6900c16e8927cdae56567b7965738e3d789353ef43405c68062a",
+        "obs_sha256": "7367c753903f4a14e1687e74b9092c38c8b242c410e194d44f59b4dc8bac1096",
+        "correct": [
+          [
+            true,
+            true
+          ],
+          [
+            true,
+            true
+          ],
+          [
+            true,
+            true
+          ],
+          [
+            true,
+            true
+          ]
+        ]
+      }
+    },
+    "errors": []
+  },
+  "after": {
+    "label": "after",
+    "environment": "Chromium headless SwiftShader, viewport1280x850 DPR1.5; CDP latency100ms down256000B/s up128000B/s",
+    "elapsed_seconds": 34.171780173899606,
+    "render_fps": 17.409980161303594,
+    "render_submit_ms": {
+      "mean": 0.5067226974904037,
+      "p50": 0.5,
+      "p95": 0.7000000476837158,
+      "count": 595
+    },
+    "fresh_state_fps": 5.062656938550053,
+    "fresh_states": 173,
+    "transport": "sse",
+    "rtt_ms": {
+      "mean": 122.27272727272727,
+      "p50": 123.0,
+      "p95": 125.0,
+      "count": 11
+    },
+    "fresh_state_latency_ms": {
+      "mean": 44.39290552745665,
+      "p50": 48.155517578125,
+      "p95": 73.323828125,
+      "count": 173
+    },
+    "server": {
+      "state_extract": {
+        "count": 201,
+        "mean_ms": 8.422080119284082,
+        "p95_ms": 9.076915215700865,
+        "total_ms": 1692.8381039761007
+      },
+      "stream_serialize": {
+        "count": 178,
+        "mean_ms": 0.5195489182042774,
+        "p95_ms": 0.6330812349915504,
+        "total_ms": 92.47970744036138
+      },
+      "stream_socket_write": {
+        "count": 178,
+        "mean_ms": 1.2599060290984894,
+        "p95_ms": 8.831850031856447,
+        "total_ms": 224.2632731795311
+      },
+      "inference_100": {
+        "count": 25,
+        "mean_ms": 885.6357665359974,
+        "p95_ms": 913.4165354538708,
+        "total_ms": 22140.894163399935
+      },
+      "physics_step": {
+        "count": 200,
+        "mean_ms": 49.564544436289,
+        "p95_ms": 55.30239555519074,
+        "total_ms": 9912.9088872578
+      },
+      "iteration_work": {
+        "count": 200,
+        "mean_ms": 168.9028103952296,
+        "p95_ms": 936.3407443161123,
+        "total_ms": 33780.56207904592
+      },
+      "pacing_wait": {
+        "count": 200,
+        "mean_ms": 0.015204173978418112,
+        "p95_ms": 0.01837018644437194,
+        "total_ms": 3.0408347956836224
+      },
+      "json_serialize": {
+        "count": 8,
+        "mean_ms": 1.012368273222819,
+        "p95_ms": 1.247138634789735,
+        "total_ms": 8.098946185782552
+      },
+      "gzip": {
+        "count": 7,
+        "mean_ms": 0.7246968868587699,
+        "p95_ms": 0.9658600902184842,
+        "total_ms": 5.072878208011389
+      },
+      "socket_write": {
+        "count": 8,
+        "mean_ms": 0.03296390059404075,
+        "p95_ms": 0.04950405564159155,
+        "total_ms": 0.263711204752326
+      },
+      "state": {
+        "step": 200,
+        "mode": "model70",
+        "action_sha256": "2a33872e751b6900c16e8927cdae56567b7965738e3d789353ef43405c68062a",
+        "obs_sha256": "7367c753903f4a14e1687e74b9092c38c8b242c410e194d44f59b4dc8bac1096",
+        "correct": [
+          [
+            true,
+            true
+          ],
+          [
+            true,
+            true
+          ],
+          [
+            true,
+            true
+          ],
+          [
+            true,
+            true
+          ]
+        ]
+      }
+    },
+    "errors": []
+  },
+  "behavior_identical": true,
+  "checks": {
+    "render_widths": [
+      643,
+      990,
+      1485
+    ],
+    "stream": {
+      "transport": "sse",
+      "errors": []
+    },
+    "fallback": {
+      "transport": "poll fallback",
+      "errors": []
+    }
+  },
+  "limitations": [
+    "Server headless SwiftShader browser, not user desktop or authenticated tunnel.",
+    "CDP latency applies to requests; persistent SSE messages need not incur a new 100ms delay each.",
+    "FPS counts browser render calls, not monitor scanout.",
+    "Fresh-state latency uses synchronized same-host clocks and only the first receipt of each nonzero step.",
+    "All-frame state age omitted: baseline includes an old paused snapshot before reset was observed; not a valid before/after metric."
+  ]
+}
