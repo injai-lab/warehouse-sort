@@ -174,3 +174,7 @@ HTTP/1.1 keep-alive와 gzip을 사용하며 초기 HTML+코드는 약 154KB, 초
 [측정 조건·변경 전후 결과](../experiments/2026-09-18-viewer-performance.md). 측정 스크립트는 `scripts/benchmark_live_viewer.py`, 품질·스트림·호환 화면 검증은 `scripts/check_live_viewer_stream.py`입니다.
 
 현재 DDPM 100회와 행동 묶음 8개를 유지하므로 약 0.9초의 추론 정지는 남습니다. 추론 횟수 감소 또는 행동 묶음 길이 변경은 정책 행동과 성공률을 바꿀 수 있는 별도 실험이며 적용하지 않았습니다.
+
+## 첫 상자 분류 후 준비 이동 실험
+
+별도 `prepare` 모드는 한 환경에서 첫 정분류 후 정상 행동 명령으로 집게 열기·상승·준비 위치 이동을 수행하고 실제 관측으로 모델을 재개합니다. 기존 모드는 유지됩니다. [실행 및 코드 안내](READY_INTERVENTION_KO.md), [단일 에피소드 기능 확인](../experiments/2026-09-20-ready-intervention.md).

@@ -1,0 +1,215 @@
+{
+  "status": "finished",
+  "step": 400,
+  "correct": [
+    [
+      true,
+      true
+    ]
+  ],
+  "events": [
+    {
+      "event": "config",
+      "time": 1789900330.352423,
+      "phase": "model_first",
+      "target": [
+        0.05528446286916733,
+        0.005043082404881716,
+        0.2206420600414276
+      ],
+      "reference_qpos": [
+        -0.08091291785240173,
+        0.46658143401145935,
+        0.10130991786718369,
+        -1.7069041728973389,
+        -0.05408439785242081,
+        2.18792462348938,
+        0.8711612820625305,
+        0.03999974951148033,
+        0.03999495878815651
+      ],
+      "max_steps": 180,
+      "tolerance": 0.008,
+      "max_delta": 0.012
+    },
+    {
+      "event": "trigger",
+      "time": 1789900348.823667,
+      "phase": "open",
+      "step": 77,
+      "first_box": 0,
+      "discarded_actions": 3,
+      "safe_z": 0.3206420600414276,
+      "tcp": [
+        -0.02729223296046257,
+        0.34411507844924927,
+        0.09109722822904587
+      ]
+    },
+    {
+      "event": "phase",
+      "time": 1789900349.0919673,
+      "phase": "raise",
+      "step": 81,
+      "tcp": [
+        -0.027459999546408653,
+        0.3436492085456848,
+        0.09036427736282349
+      ],
+      "script_steps": 4
+    },
+    {
+      "event": "phase",
+      "time": 1789900352.2536628,
+      "phase": "translate",
+      "step": 130,
+      "tcp": [
+        -0.02712395414710045,
+        0.34425410628318787,
+        0.31913530826568604
+      ],
+      "script_steps": 53
+    },
+    {
+      "event": "phase",
+      "time": 1789900357.0716414,
+      "phase": "lower",
+      "step": 205,
+      "tcp": [
+        0.0547889769077301,
+        0.004970708396285772,
+        0.32046017050743103
+      ],
+      "script_steps": 128
+    },
+    {
+      "event": "phase",
+      "time": 1789900358.4773874,
+      "phase": "model_second",
+      "step": 227,
+      "tcp": [
+        0.05474356561899185,
+        0.005026035476475954,
+        0.22186516225337982
+      ],
+      "script_steps": 150
+    },
+    {
+      "event": "episode_limit",
+      "time": 1789900389.3005676,
+      "phase": "model_second",
+      "step": 400,
+      "correct": [
+        [
+          true,
+          true
+        ]
+      ]
+    }
+  ],
+  "resumed_with_actual_history": true,
+  "errors": [],
+  "log": "/home/student/projects/Robot Parcel Sorting Challenge/runs/ready-intervention/ready-1789900330352213425.jsonl",
+  "first_both_sorted_step": 266,
+  "preparation_actor_pose_max_abs_change": {
+    "bins": 0.0,
+    "parcels": 0.010617733001708984
+  },
+  "initial_timeout": {
+    "status": "aborted",
+    "step": 177,
+    "correct": [
+      [
+        true,
+        false
+      ]
+    ],
+    "events": [
+      {
+        "event": "config",
+        "time": 1789900232.4735086,
+        "phase": "model_first",
+        "target": [
+          0.05528446286916733,
+          0.005043082404881716,
+          0.2206420600414276
+        ],
+        "reference_qpos": [
+          -0.08091291785240173,
+          0.46658143401145935,
+          0.10130991786718369,
+          -1.7069041728973389,
+          -0.05408439785242081,
+          2.18792462348938,
+          0.8711612820625305,
+          0.03999974951148033,
+          0.03999495878815651
+        ],
+        "max_steps": 100,
+        "tolerance": 0.008,
+        "max_delta": 0.012
+      },
+      {
+        "event": "trigger",
+        "time": 1789900271.0668445,
+        "phase": "open",
+        "step": 77,
+        "first_box": 0,
+        "discarded_actions": 3,
+        "safe_z": 0.3206420600414276,
+        "tcp": [
+          -0.02729223296046257,
+          0.34411507844924927,
+          0.09109722822904587
+        ]
+      },
+      {
+        "event": "phase",
+        "time": 1789900271.3423657,
+        "phase": "raise",
+        "step": 81,
+        "tcp": [
+          -0.027459999546408653,
+          0.3436492085456848,
+          0.09036427736282349
+        ],
+        "script_steps": 4
+      },
+      {
+        "event": "phase",
+        "time": 1789900274.668964,
+        "phase": "translate",
+        "step": 130,
+        "tcp": [
+          -0.02712395414710045,
+          0.34425410628318787,
+          0.31913530826568604
+        ],
+        "script_steps": 53
+      },
+      {
+        "event": "timeout",
+        "time": 1789900277.9047675,
+        "phase": "failed",
+        "step": 177,
+        "tcp": [
+          0.024464771151542664,
+          0.129442498087883,
+          0.320636510848999
+        ],
+        "target": [
+          0.05528446286916733,
+          0.005043082404881716,
+          0.2206420600414276
+        ]
+      }
+    ],
+    "resumed_with_actual_history": false,
+    "errors": [],
+    "log": "/home/student/projects/Robot Parcel Sorting Challenge/runs/ready-intervention/ready-1789900232473262754.jsonl"
+  },
+  "preparation_parcel_xyz_displacement_m": [
+    0.01089029917809248,
+    7.695177828281885e-10
+  ]
+}

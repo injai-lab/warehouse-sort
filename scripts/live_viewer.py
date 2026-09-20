@@ -22,6 +22,9 @@ import numpy as np
 import torch
 import eval_easy_aligned as aligned
 from warehouse_sort.demo_restore import restore_demo70
+from warehouse_sort.ready_intervention import ReadyIntervention
+
+START_MODE="demo70"
 
 ROOT=aligned.ROOT
 TOKEN=secrets.token_urlsafe(32)
@@ -76,24 +79,36 @@ def simulation():
         random.seed(20260915);np.random.seed(20260915);torch.manual_seed(20260915)
         torch.backends.cudnn.deterministic=args.torch_deterministic
         kwargs=dict(previous['protocol']['scene_kwargs'])
-        env=aligned.trainer.make_eval_envs(args.env_id,4,args.sim_backend,kwargs,dict(obs_horizon=2))
+        def make_env(mode):
+            options=dict(kwargs)
+            options['max_episode_steps']=400 if mode=='prepare' else 200
+            result=aligned.trainer.make_eval_envs(args.env_id,1 if mode=='prepare' else 4,args.sim_backend,options,dict(obs_horizon=2))
+            result.auto_reset=False
+            return result
+        env=make_env(START_MODE)
         env.auto_reset=False
         agent=aligned.trainer.Agent(env,args).cuda().eval()
         agent.load_state_dict(ckpt['ema_agent'],strict=True)
         assert len(agent.noise_scheduler.timesteps)==100 and args.act_horizon==8
         base=env.unwrapped
         seeds=[100000,100001,100002,100003]
-        mode='demo70';limit=45
-        obs,expert,restoration=restore_demo70(env)
+        mode=START_MODE;limit=400 if mode=='prepare' else 45
+        expert=None;restoration=None;intervention=None
+        if mode=='prepare':
+            obs,_=env.reset(seed=[seeds[0]])
+            intervention=ReadyIntervention(base,ROOT/'runs/ready-intervention')
+        else:obs,expert,restoration=restore_demo70(env)
+        control_source='학습 모델 제어' if mode=='prepare' else '시범 행동 재생'
         torch.manual_seed(20260915)
         action_hash=hashlib.sha256();obs_hash=hashlib.sha256()
-        step=0;sequence=None;cursor=0;playing=False;action=torch.zeros((4,4),device='cuda')
+        step=0;sequence=None;cursor=0;playing=False;action=torch.zeros((base.num_envs,4),device='cuda')
         publish(visuals=visuals,seeds=seeds,checkpoint_sha256=digest,status='ready',protocol='state · EMA · DDPM 100 · action chunk 8 · history 2')
 
         def snapshot():
             capture_started=time.perf_counter()
-            publish(frame_id=state.get("frame_id",0)+1,step=step,playing=playing,timestamp=time.time(),mode=mode,limit=limit,seeds=seeds if mode=='full' else [1000]*4,source_step=None if mode=='full' else 70+step,
-                restoration=None if mode=='full' else restoration,
+            publish(frame_id=state.get("frame_id",0)+1,step=step,playing=playing,timestamp=time.time(),mode=mode,limit=limit,seeds=seeds[:base.num_envs] if mode in ('full','prepare') else [1000]*4,source_step=None if mode in ('full','prepare') else 70+step,
+                control_source=control_source,intervention=intervention.info() if intervention else None,
+                restoration=None if mode in ('full','prepare') else restoration,
                 links={link.name:link.pose.raw_pose.cpu().tolist() for link in base.agent.robot.get_links()},
                 parcels=[p.pose.raw_pose.cpu().tolist() for p in base.parcels],
                 bins=[p.pose.raw_pose.cpu().tolist() for p in base.bins],
@@ -106,17 +121,26 @@ def simulation():
             with lock:
                 pending=list(commands);commands.clear()
             for command in pending:
-                if command=='play' and step<limit: playing=True
+                if command=='play' and step<limit and not (intervention and intervention.failure): playing=True
                 elif command=='pause': playing=False
                 elif command=='reset' or command.startswith('mode-'):
                     if command.startswith('mode-'):mode=command[5:]
                     playing=False
-                    if mode=='full':
-                        obs,_=env.reset(seed=seeds);limit=200
+                    wanted=1 if mode=='prepare' else 4
+                    if base.num_envs!=wanted:
+                        env.close();env=make_env(mode);base=env.unwrapped
+                        action=torch.zeros((wanted,4),device='cuda')
+                    intervention=None
+                    if mode in ('full','prepare'):
+                        obs,_=env.reset(seed=seeds[:wanted]);limit=400 if mode=='prepare' else 200
+                        if mode=='prepare':
+                            torch.manual_seed(20260915)
+                            intervention=ReadyIntervention(base,ROOT/'runs/ready-intervention')
                     else:
                         obs,expert,restoration=restore_demo70(env)
                         torch.manual_seed(20260915)
                         limit=45 if mode=='demo70' else 200
+                    control_source='시범 행동 재생' if mode=='demo70' else '학습 모델 제어'
                     step=0;sequence=None;cursor=0
                     action_hash=hashlib.sha256();obs_hash=hashlib.sha256()
                     with lock:measurements.clear()
@@ -125,12 +149,19 @@ def simulation():
                 if pending:snapshot()
                 stopping.wait(.1);continue
             started=time.perf_counter()
-            if mode=='demo70':
+            script_step=bool(intervention and intervention.scripting)
+            if script_step:
+                control_source='스크립트 제어'
+                action=intervention.action(base)
+            elif mode=='demo70':
+                control_source='시범 행동 재생'
                 action=expert[step][None].repeat(4,1)
             else:
+                control_source='학습 모델 제어'
                 if sequence is None or cursor==8:
-                    publish(status='inferring',playing=True)
+                    publish(status='inferring',playing=True,control_source=control_source)
                     torch.cuda.synchronize();inference_started=time.perf_counter()
+                    if intervention:intervention.log('policy_input',step=step,observation_history=obs[0].cpu().tolist())
                     sequence=agent.get_action(obs);cursor=0
                     torch.cuda.synchronize();measure('inference_100',inference_started)
                 action=sequence[:,cursor];cursor+=1
@@ -140,10 +171,20 @@ def simulation():
             torch.cuda.synchronize();measure('physics_step',physics_started)
             action_hash.update(action.cpu().numpy().tobytes());obs_hash.update(obs.cpu().numpy().tobytes())
             publish(action_sha256=action_hash.hexdigest(),obs_sha256=obs_hash.hexdigest())
+            if intervention:
+                if script_step:
+                    intervention.after_script_step(base,step)
+                    if not intervention.scripting:
+                        sequence=None;cursor=0
+                elif intervention.trigger(base,step,0 if sequence is None else 8-cursor):
+                    sequence=None;cursor=0
+                intervention.record_step(base,obs,action,step,control_source)
+                if intervention.failure:playing=False
             if step==limit:
-                if limit==200:assert truncated.all()
+                if limit in (200,400):assert truncated.all()
+                if intervention:intervention.log('episode_limit',step=step,correct=base._placed_correct.cpu().tolist())
                 playing=False
-            publish(status='finished' if step==limit else 'running')
+            publish(status='aborted' if intervention and intervention.failure else 'finished' if step==limit else 'running')
             snapshot()
             measure('iteration_work',started)
             wait_started=time.perf_counter()
@@ -234,6 +275,7 @@ class Handler(BaseHTTPRequestHandler):
                     started=time.perf_counter()
                     for key in ('visuals','restoration','protocol','checkpoint_sha256','action_sha256','obs_sha256'):copy.pop(key,None)
                     if copy.get('links'):
+                        index=min(index,len(copy['correct'])-1)
                         copy['links']={name:[poses[index]] for name,poses in copy['links'].items()}
                         for key in ('parcels','bins'):copy[key]=[[poses[index]] for poses in copy[key]]
                         for key in ('correct','grasped','tcp','action'):copy[key]=[copy[key][index]]
@@ -259,7 +301,7 @@ class Handler(BaseHTTPRequestHandler):
             size=int(self.headers.get('Content-Length','0'))
             if not 0<size<256:raise ValueError()
             command=json.loads(self.rfile.read(size))['command']
-            if command not in ('play','pause','reset','mode-full','mode-demo70','mode-model70'):raise ValueError()
+            if command not in ('play','pause','reset','mode-full','mode-demo70','mode-model70','mode-prepare'):raise ValueError()
         except (ValueError,KeyError):return self.send(400,b'Bad request','text/plain')
         with lock:
             if len(commands)<16:commands.append(command)
@@ -267,8 +309,10 @@ class Handler(BaseHTTPRequestHandler):
 
 
 def main():
+    global START_MODE
     parser=argparse.ArgumentParser();parser.add_argument('--port',type=int,default=8765)
-    args=parser.parse_args()
+    parser.add_argument('--mode',choices=['demo70','prepare'],default='demo70')
+    args=parser.parse_args();START_MODE=args.mode
     if not (ROOT/'.cache/live-viewer/bundle.js').is_file():
         raise SystemExit('First run setup_live_viewer_assets.py, then build_live_viewer.py with .venv/bin/python')
     server=ViewerServer(('127.0.0.1',args.port),Handler)
