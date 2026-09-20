@@ -25,15 +25,22 @@ with sync_playwright() as p:
     page.wait_for_function('!window.viewerState.playing',timeout=180000)
     result=page.evaluate('window.viewerState')
     assert result['status']!='error',result.get('error')
+    assert result['intervention']['phase']=='done',result['intervention']
+    assert page.locator('#play').is_disabled()
+    home=result['intervention']['home']
+    assert sum((a-b)**2 for a,b in zip(result['tcp'][0],home))**.5<.008
     path=Path(result['intervention']['log']);rows=[json.loads(l) for l in path.read_text().splitlines()]
     events=[r for r in rows if r['event'] not in ('step','policy_input')]
     inputs=[r for r in rows if r['event']=='policy_input' and r['phase']=='model_second']
     if inputs:
         prev=next(r for r in rows if r['event']=='step' and r['step']==inputs[0]['step'])
         assert prev['observation_history']==inputs[0]['observation_history']
-    report=dict(status=result['status'],step=result['step'],correct=result['correct'],events=events,
+    returned=next(r for r in rows if r['event']=='return_trigger')
+    assert not any(r['event']=='policy_input' and r['step']>=returned['step'] for r in rows)
+    assert all(r['source']=='스크립트 제어' for r in rows if r['event']=='step' and r['step']>returned['step'])
+    report=dict(home=home,final_tcp=result['tcp'][0],status=result['status'],step=result['step'],correct=result['correct'],events=events,
                 resumed_with_actual_history=bool(inputs),errors=errors,log=str(path))
-    Path('runs/ready-intervention/check.json').write_text(json.dumps(report,indent=2)+'\n')
+    Path('runs/ready-intervention/check-return.json').write_text(json.dumps(report,indent=2)+'\n')
     print(json.dumps(report,indent=2),flush=True)
     assert not errors,errors
     # Verify original modes can still be selected, without executing more episodes.

@@ -81,7 +81,7 @@ def simulation():
         kwargs=dict(previous['protocol']['scene_kwargs'])
         def make_env(mode):
             options=dict(kwargs)
-            options['max_episode_steps']=400 if mode=='prepare' else 200
+            options['max_episode_steps']=600 if mode=='prepare' else 200
             result=aligned.trainer.make_eval_envs(args.env_id,1 if mode=='prepare' else 4,args.sim_backend,options,dict(obs_horizon=2))
             result.auto_reset=False
             return result
@@ -92,7 +92,7 @@ def simulation():
         assert len(agent.noise_scheduler.timesteps)==100 and args.act_horizon==8
         base=env.unwrapped
         seeds=[100000,100001,100002,100003]
-        mode=START_MODE;limit=400 if mode=='prepare' else 45
+        mode=START_MODE;limit=600 if mode=='prepare' else 45
         expert=None;restoration=None;intervention=None
         if mode=='prepare':
             obs,_=env.reset(seed=[seeds[0]])
@@ -121,7 +121,7 @@ def simulation():
             with lock:
                 pending=list(commands);commands.clear()
             for command in pending:
-                if command=='play' and step<limit and not (intervention and intervention.failure): playing=True
+                if command=='play' and step<limit and not (intervention and (intervention.failure or intervention.phase=='done')): playing=True
                 elif command=='pause': playing=False
                 elif command=='reset' or command.startswith('mode-'):
                     if command.startswith('mode-'):mode=command[5:]
@@ -132,7 +132,7 @@ def simulation():
                         action=torch.zeros((wanted,4),device='cuda')
                     intervention=None
                     if mode in ('full','prepare'):
-                        obs,_=env.reset(seed=seeds[:wanted]);limit=400 if mode=='prepare' else 200
+                        obs,_=env.reset(seed=seeds[:wanted]);limit=600 if mode=='prepare' else 200
                         if mode=='prepare':
                             torch.manual_seed(20260915)
                             intervention=ReadyIntervention(base,ROOT/'runs/ready-intervention')
@@ -179,12 +179,12 @@ def simulation():
                 elif intervention.trigger(base,step,0 if sequence is None else 8-cursor):
                     sequence=None;cursor=0
                 intervention.record_step(base,obs,action,step,control_source)
-                if intervention.failure:playing=False
+                if intervention.failure or intervention.phase=='done':playing=False
             if step==limit:
-                if limit in (200,400):assert truncated.all()
+                if limit in (200,600):assert truncated.all()
                 if intervention:intervention.log('episode_limit',step=step,correct=base._placed_correct.cpu().tolist())
                 playing=False
-            publish(status='aborted' if intervention and intervention.failure else 'finished' if step==limit else 'running')
+            publish(status='aborted' if intervention and intervention.failure else 'finished' if step==limit or (intervention and intervention.phase=='done') else 'running')
             snapshot()
             measure('iteration_work',started)
             wait_started=time.perf_counter()
